@@ -10,9 +10,9 @@ and operating system features _for your running system_.
 Log in to one of the BYU CS machines using `ssh`:
 
 ```bash
-ssh <username>@schizo.cs.byu.edu
+ssh username@schizo.cs.byu.edu
 ```
-(substitute `<username>` with your actual username)
+(substitute `username` with your actual username)
 
 Run the following:
 

@@ -6,15 +6,15 @@ compilation, and execution, using `scp`, `ssh`, and `tmux`.
  1. Copy `hello.c` to one of the BYU CS lab machines using `scp`:
 
     ```
-    scp hello.c <username>@schizo.cs.byu.edu:
+    scp hello.c username@schizo.cs.byu.edu:
     ```
 
-    (replace `<username>` with your BYU CS username)
+    (replace `username` with your BYU CS username)
 
  2. Log in to one of the CS machines using the following command:
 
     ```
-    ssh <username>@schizo.cs.byu.edu
+    ssh username@schizo.cs.byu.edu
     ```
     (again, use your actual username)
 
@@ -93,7 +93,7 @@ compilation, and execution, using `scp`, `ssh`, and `tmux`.
  15. Log in to one of the CS machines using the following command:
 
      ```
-     ssh <username>@schizo.cs.byu.edu
+     ssh username@schizo.cs.byu.edu
      ```
      (again, use your actual username)
 
@@ -105,7 +105,7 @@ compilation, and execution, using `scp`, `ssh`, and `tmux`.
      following command:
 
      ```
-     ssh <username>@<hostname>
+     ssh username@hostname
      ```
      (again, use your actual username and the hostname of the machine you were
      working on previously)
