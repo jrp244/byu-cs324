@@ -24,6 +24,7 @@ Running this command opens a "pager" (i.e., a file viewer) that displays the
 contents of the manual page for the program `man`.  With the default pager
 (`less`), the following keys are helpful for navigation:
 
+ - `h`: launch the built-in help
  - `j` or down arrow: go down one line (mneumonic: the crook of the j points
    downward)
  - `k` or up arrow: go up one line
