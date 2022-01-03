@@ -42,8 +42,8 @@ gcc -o catmatch catmatch.c
 
 Your code should compile with no warnings!
 
-The `-o` option names the resulting binary being named `catmatch` (as opposed to the default, `a.out`).
-
+The `-o` option names the resulting binary being named `catmatch` (as opposed
+to the default, `a.out`).
 
 ## Testing
 
