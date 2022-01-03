@@ -47,12 +47,13 @@ The `-o` option names the resulting binary being named `catmatch` (as opposed to
 
 ## Testing
 
-Consider the file `lorem-ipsum.txt`.  If run with:
+Consider the file [lorem-ipsum.txt](lorem-ipsum.txt).  If run with:
 
-`./catmatch lorem-ipsum.txt`
+```bash
+CATMATCH_PATTERN=al ./catmatch lorem-ipsum.txt
+```
 
-and the value of the environment var `CATMATCH_PATTERN` was `al`, then the
-output would be:
+then the output would be:
 
 ```
 1234
