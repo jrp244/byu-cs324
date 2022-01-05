@@ -82,7 +82,12 @@ a sanity check for identifying the lines with specified pattern.
 
 For your convenience, a [script](driver.sh) is also provided for automated
 testing.  This is not a replacement for manual testing but can be used as a
-sanity check.
+sanity check.  You can use it by simply running the following, where the
+script, `driver.sh`, is in the same directory as `catmatch.c`.
+
+```
+./driver.sh
+```
 
 
 # Helps
