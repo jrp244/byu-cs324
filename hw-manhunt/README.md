@@ -49,14 +49,15 @@ is opened.
 
  1. What are the numbers associated with the manual sections for executable
     programs, system calls, and library calls, respectively?
- 2. Which section number(s) contain an entry for `open`?
+ 2. Which section number(s) contain a man page for `open`?
  3. What three `#include` lines should be included to use the `open()` system
     call?
- 4. Which section number(s) contain an entry for `socket`?
+ 4. Which section number(s) contain a man page for `socket`?
  5. Which `socket` option "Returns a value indicating whether or not this
     socket has been marked to accept connections with listen(2)"?
- 6. How many sections contain keyword references to `getaddrinfo`?
- 7. According to the "DESCRIPTION" section of the man page for `string`, the
+ 6. How many man pages (in any section) contain keyword references to
+    `getaddrinfo`?
+ 8. According to the "DESCRIPTION" section of the man page for `string`, the
     functions described in that man page are used to perform operations on
     strings that are ________________. (fill in the blank)
  8. What is the return value of `strcmp()` if the value of its first argument
