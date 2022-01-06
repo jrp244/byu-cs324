@@ -5,7 +5,7 @@ environment, and string searching in C, including basic Input/Output.  Read the
 entire assignment before beginning!
 
 
-## Usage
+# Specification
 
 Your program will be run from the command line in the following way:
 
@@ -42,10 +42,14 @@ gcc -o catmatch catmatch.c
 
 Your code should compile with no warnings!
 
-The `-o` option names the resulting binary being named `catmatch` (as opposed to the default, `a.out`).
+The `-o` option names the resulting binary being named `catmatch` (as opposed
+to the default, `a.out`).
 
 
-## Testing
+# Testing
+
+
+## Manual Testing
 
 Consider the file [lorem-ipsum.txt](lorem-ipsum.txt).  If run with:
 
@@ -68,12 +72,25 @@ then the output would be:
 
 (where `1234` is the process ID)
 
-Try with several different patterns.  You can check your work with the
-command-line program `grep`.  `grep` does not produce the same output, but it
-can be used as a sanity check for identifying the lines with specified pattern.
+Try with several different patterns and with and without the `CATMATCH_PATTERN`
+environment variable set.  You can check your work with the command-line
+program `grep`.  `grep` does not produce the same output, but it can be used as
+a sanity check for identifying the lines with specified pattern.
 
 
-## Helps
+## Automated Testing
+
+For your convenience, a [script](driver.sh) is also provided for automated
+testing.  This is not a replacement for manual testing but can be used as a
+sanity check.  You can use it by simply running the following, where the
+script, `driver.sh`, is in the same directory as `catmatch.c`.
+
+```
+./driver.sh
+```
+
+
+# Helps
 
 Reading the man pages for each of the following will make your life easier:
 
