@@ -47,4 +47,3 @@ int main(int argc, char *argv[]) {
 
 	/* END SECTION D */
 }
-
