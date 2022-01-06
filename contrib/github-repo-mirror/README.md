@@ -13,7 +13,7 @@ folder also contains other files that are part of the assignment.  The
 description of the assignment is often best viewed with a Web browser.  The
 accompanying files can be downloaded directly from the folder, with a Web
 browser. However, in order to more easily download files associated with
-assignments, keep them up-to-date, and simultaneous version your own code
+assignments, keep them up-to-date, and simultaneously version your own code
 developed for class, we suggest mirroring the class GitHub repository.
 
 
