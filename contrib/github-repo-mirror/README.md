@@ -29,10 +29,10 @@ Throughout these steps, we will refer to the official class repository as the
  1. Create new repository on github. Follow steps 1 through 6 in the
     [official documentation](https://docs.github.com/en/get-started/quickstart/create-a-repo#create-a-repository),
     adhering to the following:
-    - Create the repository under your user ("username"), and call the
-      repository `byu-cs324-w2022`.
-    - Make sure the visibility of the repository is _Private_.
-    - Do not check the box "Initialize this repository with a README".
+    - Create the repository under your user ("username"), and name the
+      repository `byu-cs324-w2022` (Step 2).
+    - Make sure the visibility of the repository is _Private_ (Step 4).
+    - Do _not_ check the box "Initialize this repository with a README" (Step 5).
    
  2. Clone the upstream repository by running the following from the
     terminal:
