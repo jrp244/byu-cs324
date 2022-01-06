@@ -84,12 +84,11 @@ logged in as `bandit0`, etc.  For example:
 
 ```
 Level 0:
-foo
 0G3wlqW6MYydw4jQJb99pW8+uISjbJhe
+foo
 Level 1:
-grep bar somefile.txt | awk '{ print $8 }' | base64 -d
 xJJHpfRpbE7F2cAt8+V9HLEoZEzZqvi+
-
+grep bar somefile.txt | awk '{ print $8 }' | base64 -d
 ...
 ```
 
