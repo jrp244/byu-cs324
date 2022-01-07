@@ -17,7 +17,69 @@ assignments, keep them up-to-date, and simultaneously version your own code
 developed for class, we suggest mirroring the class GitHub repository.
 
 
-## Create a Mirrored Version of the Class Repository
+## Registering an SSH Key for Use with GitHub
+
+These steps are necessary for you to use SSH to fetch and push your updates
+from and to GitHub.  They should be performed on the machine on which you will
+be doing your work.  If you already have an SSH key registered with GitHub from
+the machine on which you will be doing your work, then you do not need to do
+this again.
+
+ 1. Find out if you already have an SSH key to use by running the following:
+
+    ```
+    $ ls -ltra ~/.ssh/id_*
+    -rw-r--r-- 1 user group  564 Jan  7 15:35 /home/user/.ssh/id_rsa.pub
+    -rw------- 1 user group 2635 Jan  7 15:35 /home/user/.ssh/id_rsa
+    ```
+
+    In the above example, there is a public/private key pair named `id_rsa.pub`
+    and `id_rsa`, respectively.  However, if there are no keys, `ls` will
+    return an error:
+
+    ```
+    $ ls -ltra ~/.ssh/id_*
+    ls: cannot access '/home/user/.ssh/id_*': No such file or directory
+    ```
+
+    If you have keys, _and_ they are registered with GitHub, then you can now
+    to step 3.  Otherwise, continue to step 2.
+
+ 2. Run the following from the command line to create an SSH public/private key
+    pair:
+
+    ```
+    $ ssh-keygen
+    Generating public/private rsa key pair.
+    ```
+
+    At the following prompt, just hit enter to use the default file location:
+    ```
+    Enter file in which to save the key (/home/user/.ssh/id_rsa):
+    ```
+
+    Optionally enter a passphrase at the next prompt.  This makes sure that the
+    private key cannot be used without the passphrase. This is good practice
+    for a shared machine in particular:
+
+    ```
+    Enter passphrase (empty for no passphrase):
+    Enter same passphrase again:
+    ```
+
+ 3. Print the contents of your _public_ key, and copy them to your clipboard:
+
+    ```
+    $ cat ~/.ssh/id_rsa.pub
+    ```
+    (this assumes the name of your public key file is `id_rsa.pub`.)
+
+ 4. Follow steps 2 through 8 in the
+    [official documentation](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
+    to register your SSH key with your GitHub account.
+
+
+## Create a Mirrored Version of the GitHub Class Repository
 
 This is a one-time process to create and configure your own private repository
 for referencing and committing changes, which repository is a mirror of the
@@ -33,7 +95,7 @@ Throughout these steps, we will refer to the official class repository as the
       repository `byu-cs324-w2022` (Step 2).
     - Make sure the visibility of the repository is _Private_ (Step 4).
     - Do _not_ check the box "Initialize this repository with a README" (Step 5).
-   
+
  2. Clone the upstream repository by running the following from the
     terminal:
     ```
