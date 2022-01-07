@@ -42,8 +42,7 @@ this again.
     ls: cannot access '/home/user/.ssh/id_*': No such file or directory
     ```
 
-    If you have keys, _and_ they are registered with GitHub, then you can now
-    to step 3.  Otherwise, continue to step 2.
+    If you have keys then you can now to step 3.  Otherwise, continue to step 2.
 
  2. Run the following from the command line to create an SSH public/private key
     pair:
