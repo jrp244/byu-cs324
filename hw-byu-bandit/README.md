@@ -102,7 +102,13 @@ resume.
 
 # Automated Testing
 
-A driver will be posted here soon, for automated testing...
+For your convenience, a script is also provided for automated testing.  This is
+not a replacement for manual testing but can be used as a sanity check.  You
+can use it by simply running the following:
+
+```
+./SshTester.py bandit.txt
+```
 
 
 # Helps
