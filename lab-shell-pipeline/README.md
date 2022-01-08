@@ -242,8 +242,8 @@ You entered: foo bar
 tsh>
 ```
 
-This gives you can idea of what is being passed to `eval()`--a string (i.e.,
-a array of `char`, terminated by a null byte).  But that single string needs
+This gives you an idea of what is being passed to `eval()`--a string (i.e.,
+an array of `char`, terminated by a null byte).  But that single string needs
 to be parsed and then evaluated.  Fortunately, there are some helper functions
 to help you with the parsing.
 
