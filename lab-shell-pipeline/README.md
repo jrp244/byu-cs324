@@ -271,8 +271,8 @@ is passed in as an argument: `char **argv` (i.e., an array of `char *`).
 
 For example, suppose the following command line is provided to your shell:
 
-```
-/bin/cat < test.txt | /bin/grep foo > test2.txt
+```bash
+$ /bin/cat < test.txt | /bin/grep foo > test2.txt
 ```
 
 After calling `parseline()`, `argv` contains the following:
@@ -577,7 +577,7 @@ rtest`, you can see how well your tiny shell did against the reference shell.
 This can be automated with:
 
 ```
-make test01
+$ make test01
 ```
 
 (etc.)
