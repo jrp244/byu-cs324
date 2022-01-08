@@ -9,7 +9,7 @@ runs the programs specified in those commands.
 # Table of Contents
 - [Getting Started](#getting-started)
   - [Reading](#reading)
-  - [Resources Provided](#resources-provide)
+  - [Resources Provided](#resources-provided)
   - [Reference Tiny Shell](#reference-tiny-shell)
   - [Non-Functionality](#non-functionality)
   - [Your Tiny Shell](#your-tiny-shell)
