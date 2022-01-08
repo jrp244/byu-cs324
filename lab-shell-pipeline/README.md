@@ -26,9 +26,18 @@ runs the programs specified in those commands.
 
 ## Reading
 
- - Read every word of Chapter 8 (Exceptional Control Flow) in your textbook.
- - Read the man pages for `waitpid()`, `fork()`, `exec()`, `execve()`,
-   `pipe()`, `dup2()`, and `setpgid()`.
+Read the following in preparation for this assignment:
+  - Sections 8.2 - 8.4 and 10.8 - 10.10 in the book
+  - The man pages for the following system calls:
+    - `fork()`
+    - `pipe()`
+    - `dup2()`
+    - `close()`
+    - `waitpid()`
+    - `exec`
+    - `execve()`
+    - `setpgid()`
+
 
 ## Resources Provided
 
@@ -391,10 +400,10 @@ the process is:
      input/output redirection.
 
      Remember that when multiple file descriptors are referencing the same
-     system-wide file description entry (e.g., after a call to `dup2()`),
-     calling `close()` on only one of them will not close the file--only
-     de-reference the file description entry.  So leave open only the file
-     descriptors that you need; it is safe to close all others.
+     system-wide file description entry (e.g., after a call to `fork()` or
+     `dup2()`), calling `close()` on only one of them will not close the
+     file--only de-reference the file description entry.  So leave open only
+     the file descriptors that you need; it is safe to close all others.
 
      If your pipeline hangs, it is likely because some descriptors have
      accidentally been left open. Check, check, and check again.
@@ -462,10 +471,10 @@ For each pair of commands, the process is:
      the pipe.
 
      Remember that when multiple file descriptors are referencing the same
-     system-wide file description entry (e.g., after a call to `dup2()`),
-     calling `close()` on only one of them will not close the file--only
-     de-reference the file description entry.  So leave open only the file
-     descriptors that you need; it is safe to close all others.
+     system-wide file description entry (e.g., after a call to `fork()` or
+     `dup2()`), calling `close()` on only one of them will not close the
+     file--only de-reference the file description entry.  So leave open only
+     the file descriptors that you need; it is safe to close all others.
 
      If your pipeline hangs, it is likely because some descriptors have
      accidentally been left open. Check, check, and check again.
