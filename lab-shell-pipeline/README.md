@@ -6,13 +6,29 @@ redirection, and inter-process communication (IPC) using pipes.  To do this,
 you will implement a real shell, which reads commands from standard input and
 runs the programs specified in those commands.
 
+# Table of Contents
+- [Getting Started](#getting-started)
+  - [Reading](#reading)
+  - [Resources Provided](#resources-provide)
+  - [Reference Tiny Shell](#reference-tiny-shell)
+  - [Non-Functionality](#non-functionality)
+  - [Your Tiny Shell](#your-tiny-shell)
+  - [`tsh.c` Overview](#tshc-overview)
+- [Instructions](#instructions)
+  - [`builtin_cmd()`](#builtin_cmd)
+  - [`eval()`](#eval)
+- [Automated Testing](#automated-testing)
+- [Evaluation](#evaluation)
+- [Submission](#submission)
+
+
 # Getting Started
 
 ## Reading
 
  - Read every word of Chapter 8 (Exceptional Control Flow) in your textbook.
- - The waitpid, fork, execve, pipe, dup2, and setpgid functions will come in very handy.
-Read the man page for each of these functions to find the best way to effectively use them in the shell.
+ - Read the man pages for `waitpid()`, `fork()`, `exec()`, `execve()`,
+   `pipe()`, `dup2()`, and `setpgid()`.
 
 ## Resources Provided
 
