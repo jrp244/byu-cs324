@@ -403,9 +403,12 @@ the process is:
      system-wide file description entry (e.g., after a call to `fork()` or
      `dup2()`), calling `close()` on only one of them will not close the
      file--only de-reference the file description entry.  So leave open only
-     the file descriptors that you need; it is safe to close all others.
+     the file descriptors that you need; it is safe to close all others.  An
+     illustration of what the final product should look like is shown below:
 
-     If your pipeline hangs, it is likely because some descriptors have
+     [redirection.png](redirection.png)
+
+     If your command hangs, it is likely because some descriptors have
      accidentally been left open. Check, check, and check again.
    - Run the executable in the context of the child process using `execve()`.
  - In the parent process:
@@ -474,7 +477,10 @@ For each pair of commands, the process is:
      system-wide file description entry (e.g., after a call to `fork()` or
      `dup2()`), calling `close()` on only one of them will not close the
      file--only de-reference the file description entry.  So leave open only
-     the file descriptors that you need; it is safe to close all others.
+     the file descriptors that you need; it is safe to close all others.  An
+     illustration of what the final product should look like is shown below:
+
+     [pipeline.png](pipeline.png)
 
      If your pipeline hangs, it is likely because some descriptors have
      accidentally been left open. Check, check, and check again.
