@@ -11,7 +11,7 @@ runs the programs specified in those commands.
   - [Reading](#reading)
   - [Resources Provided](#resources-provided)
   - [Reference Tiny Shell](#reference-tiny-shell)
-  - [Non-Functionality](#non-functionality)
+  - [Functionality Not Included](#functionality-not-included)
   - [Your Tiny Shell](#your-tiny-shell)
   - [`tsh.c` Overview](#tshc-overview)
 - [Instructions](#instructions)
@@ -166,7 +166,7 @@ Try either one of these to make the shell exit and to return to the shell from
 which you called `./tinyref`.
 
 
-## Non-Functionality
+## Functionality Not Included
 
 While the tiny shell has a lot of nifty features, such as those demonstrated
 previously, there are a few that are clearly missing, which are enumerated
