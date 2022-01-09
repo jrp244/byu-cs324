@@ -189,7 +189,7 @@ here, for your reference:
 Run the following to compile `tsh.c`:
 
 ```bash
-make
+$ make
 ```
 
 Run the incomplete tiny shell implementation derived from `tsh.c`:
