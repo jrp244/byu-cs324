@@ -406,7 +406,7 @@ the process is:
      the file descriptors that you need; it is safe to close all others.  An
      illustration of what the final product should look like is shown below:
 
-     ![redirection.png](redirection.png)
+     <img src="redirection.png" width="200">
 
      If your command hangs, it is likely because some descriptors have
      accidentally been left open. Check, check, and check again.
@@ -480,7 +480,7 @@ For each pair of commands, the process is:
      the file descriptors that you need; it is safe to close all others.  An
      illustration of what the final product should look like is shown below:
 
-     ![pipeline.png](pipeline.png)
+     <img src="pipeline.png" width="200">
 
      If your pipeline hangs, it is likely because some descriptors have
      accidentally been left open. Check, check, and check again.
