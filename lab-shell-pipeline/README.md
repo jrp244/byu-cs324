@@ -407,9 +407,6 @@ the process is:
      illustration of what the final product should look like is shown below:
 
      <img src="redirection.png" width="400">
-
-     If your command hangs, it is likely because some descriptors have
-     accidentally been left open. Check, check, and check again.
    - Run the executable in the context of the child process using `execve()`.
  - In the parent process:
    - Put the child process in its own process group, for which the group ID is
@@ -444,9 +441,9 @@ Now would also be a good time to save your work, if you haven't already.
 
 ### Multiple Commands
 
-For every two consecutive commands in the pipeline (e.g., command 0 and command
-1, command 1 and command 2, etc.), a pipe should be created, such that the
-write end of the pipe is duplicated on the standard output of the process
+For every pair of consecutive commands in the pipeline (e.g., command 0 and
+command 1, command 1 and command 2, etc.), a pipe should be created, such that
+the write end of the pipe is duplicated on the standard output of the process
 running the first/earlier command, and the read end of the pipe is duplicated
 on the standard input of the process running the second/later command.  Thus,
 for a pipeline consisting of `n` commands, there should be `n` child processes
@@ -615,8 +612,8 @@ Happy testing!
 Your score will be computed out of a maximum of 100 points based on the
 following distribution:
 
- - 96 points for correct shell behavior: 8 trace files at 12 points each.
- - 4 points for correct shell behavior: 8 trace files at 12 points each.
+ - 96 points for correct shell behavior: 12 trace files at 8 points each.
+ - 4 points for compilation without warnings
 
 
 # Submission
