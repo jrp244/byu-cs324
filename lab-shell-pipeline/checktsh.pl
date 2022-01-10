@@ -299,7 +299,7 @@ sub check_trace13 {
     }
 
     $tshline = <TSHFILE>;
-    $expectedline = "tsh> /bin/ps a\n";
+    $expectedline = "tsh> /bin/ps T\n";
     if ($tshline ne $expectedline) {
 	if (!$etrace) {
 	    print "$0: ERROR: Expected a ps command after the fg command:\n";
