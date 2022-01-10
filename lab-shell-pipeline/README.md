@@ -74,7 +74,7 @@ tsh>
 
 Every time you type a command at the prompt, the shell will execute the command
 and print the prompt again when the command is finished--an indicator that it
-is ready to receive and execute the next command.  For example:
+is ready to read and execute the next command.  For example:
 
 ```bash
 tsh> /bin/sleep 10
@@ -163,7 +163,7 @@ input forever--unless and until one of two things happens:
    `ctrl`+`d`.  When EOF is detected, the shell also calls `exit(0)`,
    terminating the process.
 Try either one of these to make the shell exit and to return to the shell from
-which you called `./tinyref`.
+which you called `./tshref`.
 
 
 ## Functionality Not Included
