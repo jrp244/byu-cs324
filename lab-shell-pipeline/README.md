@@ -584,7 +584,7 @@ overwrite an existing file on the filesystem.  These files are deleted by the
 driver when it is done running the trace.
 
 Some trace files also contain directives in place of commands.  For example, a
-line begins with the word `SLEEP` is not actually a command, but rather a
+line that begins with the word `SLEEP` is not actually a command, but rather a
 directive that the driver should wait for a designated number of seconds before
 executing the next command.   The  `INT` and `TSTP` directives direct the
 driver to send a `SIGINT` or a `SIGTSTP` to the shell, simulating a `ctrl`+`c`
