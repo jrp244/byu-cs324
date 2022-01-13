@@ -204,6 +204,17 @@ In this case:
     entered, and no jobs are still running.
 
 
+### Non-Existent Commands
+
+The shell is no dummy.  If you pass it a command is neither the valid path of
+an executable nor a built-in command, it will complain!
+
+```bash
+tsh> /does/not/exist
+/does/not/exist: Command not found
+```
+
+
 ### Checkpoint 1
 
 By this point, there should be an understanding of the following:
@@ -285,6 +296,21 @@ tsh>
 
 Assuming the job is allowed to run to completion without further interruption,
 the prompt is not returned until the command completes.
+
+If you try to pass an invalid (i.e., not associated with any current job) job
+ID or process ID to `fg` or `bg`, the shell will complain!
+
+```
+tsh> fg %1
+%1: No such job
+tsh> fg 1234
+(1234): No such process
+tsh> bg %1
+%1: No such job
+tsh> bg 1234
+(1234): No such process
+tsh>
+```
 
 Note that, just like `jobs`, `bg` and `fg` are built-in commands, which will
 result in code from your program being run.  Specifically, the `do_bgfg()` is
