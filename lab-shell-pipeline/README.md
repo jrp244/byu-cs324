@@ -24,6 +24,11 @@ runs the programs specified in those commands.
 
 # Getting Started
 
+This section is intended to familiarize you with the concepts associated with
+the lab and the resources provided to help you complete it, including a
+walk-through usage of the reference shell.  You will begin coding in the
+[instructions](#instructions) section.
+
 ## Reading
 
 Read the following in preparation for this assignment:
@@ -359,8 +364,11 @@ arguments passed have the following values:
 
 # Instructions
 
+_This is where you start coding!_
+
 Flesh out the following functions in `tsh.c` to create a shell that supports
 command execution, input/output redirection, and pipelining.
+
 
 ## `builtin_cmd()`
 
@@ -381,9 +389,20 @@ in was _not_ a built-in command.
    from standard input in the read/eval loop.
 
 Parse the command line using `parseline()` and `parseargs()`, and pass the
-first command (and its arguments) in the pipeline to `builtin_cmd()`.  If
-`builtin_cmd()` indicates that it is not a built-in command (return value of
-0), then begin execution of the commands in the pipeline.
+first command (and its arguments) in the pipeline to `builtin_cmd()`.
+
+If `builtin_cmd()` indicates that it is not a built-in command (return value
+of 0), then begin execution of the commands in the pipeline, following the
+instructions in the next sections.
+
+### Checkpoint 1
+
+At this point, test your shell by 1) calling `make` to compile `tsh.c` and 2)
+entering `quit` at the command line.  It should terminate the shell as
+expected.  See the [example](#reference-tiny-shell) of `quit`.
+
+You can also test your work with [automated testing](#automated-testing).
+Tests 1 - 2 should work at this point.
 
 
 ### Single Command
@@ -427,6 +446,8 @@ The tools that you will use for this are:
  - `waitpid()`
  - `execve()`
  - `setpgid()`
+
+### Checkpoint 2
 
 When you have gotten this far, test your shell by 1) calling `make` to compile
 `tsh.c` and 2) running the example command-line exercises
@@ -524,6 +545,9 @@ The tools that you will use for this are:
  - `waitpid()`
  - `execve()`
  - `setpgid()`
+
+
+### Checkpoint 3
 
 When you have gotten this far, again test your shell by 1) calling `make` to
 compile `tsh.c` and 2) running the example command-line exercises
