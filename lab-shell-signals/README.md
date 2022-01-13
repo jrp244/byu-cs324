@@ -16,12 +16,12 @@ programs specified in those commands.
 - [Instructions](#instructions)
   - [`builtin_cmd()`](#builtin_cmd)
   - [`eval()`](#eval)
-  - [Checkpoint 1](#checkpoint-1)
+  - [Checkpoint 1](#checkpoint-1-1)
   - [`sigchld_handler()`](#sigchld_handler)
   - [`waitfg()`](#waitfg)
-  - [Checkpoint 2](#checkpoint-2)
+  - [Checkpoint 2](#checkpoint-2-1)
   - [`sigint_handler()` and `sigtstp_handler()`](#sigint_handler-and-sigtstp_handler)
-  - [Checkpoint 3](#checkpoint-3)
+  - [Checkpoint 3](#checkpoint-3-1)
   - [`do_bgfg()`](#do_bgfg)
   - [Final Checkpoint](#final-checkpoint)
 - [Automated Testing](#automated-testing)
@@ -30,6 +30,11 @@ programs specified in those commands.
 
 
 # Getting Started
+
+This section is intended to familiarize you with the concepts associated with
+the lab and the resources provided to help you complete it, including a
+walk-through usage of the reference shell.  You will begin coding in the
+[instructions](#instructions) section.
 
 ## Reading
 
@@ -154,9 +159,9 @@ struct job_t jobs[MAXJOBS]; /* The job list */
 ```
 
 Thus, when `jobs` is entered at the command line, the shell runs the function
-`listjobs()`, which is a function that will be fleshed out by you, to iterate
-over the array of jobs (i.e., `jobs`) and print out the information associated
-with each.
+`listjobs()` (a helper function, already given to you), to iterate over the
+array of jobs (i.e., `jobs`) and print out the information associated with
+each.
 
 If you wait longer than 10 seconds and then enter `jobs` again, the list will
 have changed:
@@ -546,6 +551,8 @@ The following functions are used for
 
 
 # Instructions
+
+_This is where you start coding!_
 
 Flesh out the following functions in `tsh.c` to create a shell that supports
 command execution, signal handling, and job control.
