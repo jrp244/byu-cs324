@@ -300,7 +300,7 @@ the prompt is not returned until the command completes.
 If you try to pass an invalid (i.e., not associated with any current job) job
 ID or process ID to `fg` or `bg`, the shell will complain!
 
-```
+```bash
 tsh> fg %1
 %1: No such job
 tsh> fg 1234
@@ -309,6 +309,17 @@ tsh> bg %1
 %1: No such job
 tsh> bg 1234
 (1234): No such process
+tsh>
+```
+
+Finally, the shell will complain if your `fg` or `bg` command is missing a job
+ID or process ID altogether:
+
+```bash
+tsh> fg
+fg command requires PID or %jobid argument
+tsh> bg
+bg command requires PID or %jobid argument
 tsh>
 ```
 
