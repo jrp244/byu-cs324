@@ -511,8 +511,8 @@ tsh>
 
 This gives you an idea of what is being passed to `eval()`--a string (i.e.,
 an array of `char`, terminated by a null byte).  But that single string needs
-to be parsed and then evaluated.  Fortunately, there are some helper functions
-to help you with the parsing.
+to be parsed and then evaluated.  Fortunately, there is a
+[helper function](#parseline) to help you with the parsing.
 
 
 ### Signal Handlers
