@@ -537,29 +537,73 @@ Tests 1 - 3 and 34 - 42 should work at this point.
 # Automated Testing
 
 The trace files provided can be used to test the behavior of your shell in an
-automated fashion.
-
-
-To run your shell against trace file 1, run the following:
-
-```bash
-$ make stest01
-```
-
-Replace `stest01` with `stest02` to test against trace file 2, etc.
-
-For comparison, to run the reference shell against trace file 1, run the
+automated fashion, with the help of the driver.  Each trace file contains a
+brief description of the test, as well as a list of shell commands or other
+directives to be used in testing.  For example, `trace41.txt` contains the
 following:
 
+```
+#
+# trace41.txt - Pipeline with stdin/stdout redirection
+#
+/bin/echo -e tsh> ./myppid \0174 /bin/grep [0-9] \0076 TEMPFILE1
+./myppid | /bin/grep [0-9] > TEMPFILE1
+
+/bin/echo -e tsh> ./myppid \0174 /bin/grep [a-z] \0076 TEMPFILE2
+./myppid | /bin/grep [a-z] > TEMPFILE2
+
+/bin/echo -e tsh> /bin/cat TEMPFILE1
+/bin/cat TEMPFILE1
+
+/bin/echo -e tsh> /bin/cat TEMPFILE2
+/bin/cat TEMPFILE2
+
+/bin/echo -e tsh> /bin/cat \0074 TEMPFILE1 \0174 /bin/grep [0-9]
+/bin/cat < TEMPFILE1 | /bin/grep [0-9]
+
+/bin/echo -e tsh> /bin/cat \0074 TEMPFILE1 \0174 /bin/grep [a-z]
+/bin/cat < TEMPFILE1 | /bin/grep [a-z]
+```
+
+In this case, the shell receives and evaluates the following two lines as
+commands:
+
+```
+/bin/echo -e tsh> ./myppid \0174 /bin/grep [0-9] \0076 TEMPFILE1
+./myppid | /bin/grep [0-9] > TEMPFILE1
+```
+
+(Note that the first of each pair of commands in a trace file typically
+involves the command `/bin/echo`, and its job is simply to print out the second
+command. This makes the driver output a little easier to follow.)
+
+The words starting with `TEMPFILE` are not actual filenames.  Rather, each is a
+directive for the driver to dynamically create a (temporary) file with a
+random name that is guaranteed to be unique.  This is so it doesn't accidentally
+overwrite an existing file on the filesystem.  These files are deleted by the
+driver when it is done running the trace.
+
+Some trace files also contains directives in place of commands.  For example, a
+line begins with the word `SLEEP` is not actually a command, but rather a
+directive that the driver should wait for a designated number of seconds before
+executing the next command.   The  `INT` and `TSTP` directives direct the
+driver to send a `SIGINT` or a `SIGTSTP` to the shell, simulating a `ctrl`+`c`
+or `ctrl`+`z`, respectively.
+
+To run the _reference_ shell against the a `trace41.txt`, use the following:
+
 ```bash
-$ make rtest01
+$ make rtest41
 ```
 
-Running the tiny shell against a trace file has generates the same output you
-would have gotten had you run your shell interactively (except for an initial
-comment that identifies the trace and its description). For example:
+Replace `rtest41` with `rtest01`, `rtest02`, etc., to test the reference shell
+against `trace01.txt`, `trace02.txt`, etc.
 
-```
+Running the tiny shell against a trace file generates the same output you would
+have gotten had you run your shell interactively (except for an initial comment
+that identifies the trace and its description).  For example:
+
+```bash
 $ make rtest41
 #
 # trace41.txt - Pipeline with stdin/stdout redirection
@@ -575,17 +619,24 @@ tsh> /bin/cat < tshtmp-1-1KEnkI | /bin/grep [0-9]
 tsh> /bin/cat < tshtmp-1-1KEnkI | /bin/grep [a-z]
 ```
 
-Thus, you can by comparing the output of `make stest` with that of `make
-rtest`, you can see how well your tiny shell did against the reference shell.
-This can be automated with:
+For comparison, to run _your_ shell against `trace41.txt`, run the following:
+
+```bash
+$ make stest41
+```
+
+By comparing the output of `make stest` with that of `make rtest`, you can see
+how well your tiny shell did against the reference shell.  This can be
+automated with:
 
 ```
-$ make test01
+$ make test41
 ```
 
 (etc.)
 
-Additonally, to run comparison against _all_ traces, you can run the following:
+Additonally, to run a comparison against _all_ traces, you can run the
+following:
 
 ```
 $ make testall
