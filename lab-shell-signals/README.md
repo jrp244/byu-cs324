@@ -821,13 +821,14 @@ Tests 1 - 8, 11 - 12, and 16 should work at this point.
 
  - `char **argv` - an array of strings representing a command and its arguments
 
-Examine the command-line argument passed to `bg` or `fg`, and determine whether
-it is a job ID or a process ID that was specified (hint: look for the `%`).
-Determine whether the job ID or process ID corresponds to a valid job, and
-print an error otherwise.  If the job exists, then update its state.  Send a
-`SIGCONT` signal to the process group of the job.  Finally, if `fg` was
-specified, then wait on the job in the same way that you did in `eval()`, i.e.,
-with `waitfg()`.
+Ensure that a command-line argument was passed to `bg` or `fg`, and print and
+error otherwise.  Examine the command-line argument passed to `bg` or `fg`, and
+determine whether it is a job ID or a process ID that was specified (hint: look
+for the `%`).  Determine whether the job ID or process ID corresponds to a
+valid job, and print an error otherwise.  If the job exists, then update its
+state.  Send a `SIGCONT` signal to the process group of the job.  Finally, if
+`fg` was specified, then wait on the job in the same way that you did in
+`eval()`, i.e., with `waitfg()`.
 
 
 ## Final Checkpoint
