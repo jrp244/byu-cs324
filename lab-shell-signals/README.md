@@ -552,24 +552,18 @@ is passed in as an argument: `char **argv` (i.e., an array of `char *`).
 For example, suppose the following command line is provided to your shell:
 
 ```bash
-$ /bin/cat < test.txt | /bin/grep foo > test2.txt
+$ /bin/cat test.txt
 ```
 
 After calling `parseline()`, `argv` contains the following:
 
 ```c
 argv[0] = "/bin/cat";
-argv[1] = "<";
-argv[2] = "test.txt";
-argv[3] = "|";
-argv[4] = "/bin/grep";
-argv[5] = "foo";
-argv[6] = ">";
-argv[7] = "test2.txt";
-argv[8] = NULL;
+argv[1] = "test.txt";
+argv[2] = NULL;
 ```
 
-(A `NULL` value at index 8 indicates that that there are no more words, so your
+(A `NULL` value at index 2 indicates that that there are no more words, so your
 code can detect that programmatically.)
 
 
