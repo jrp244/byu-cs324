@@ -423,7 +423,8 @@ the process is:
      `dup2()`), calling `close()` on only one of them will not close the
      file--only de-reference the file description entry.  So leave open only
      the file descriptors that you need; it is safe to close all others.  An
-     illustration of what the final product should look like is shown below:
+     illustration of what the final product should look like when a file is
+     opened for output redirection is shown below:
 
      <img src="redirection.png" width="400">
    - Run the executable in the context of the child process using `execve()`.
@@ -499,6 +500,11 @@ For each pair of commands, the process is:
      illustration of what the final product should look like is shown below:
 
      <img src="pipeline.png" width="400">
+
+     Note that file descriptor 2 (standard error) is not shown in the above
+     image for the sake of clarity.  File descriptor 2 should not closed; it
+     simply is unchanged.  See the redirection image in the
+     [previous section](#single-command) for an example.
 
      If your pipeline hangs, it is likely because some descriptors have
      accidentally been left open. Check, check, and check again.
