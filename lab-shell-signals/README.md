@@ -620,7 +620,9 @@ command line corresponds to a built-in command.  Otherwise, do the following:
  - In the child process:
    - Unblock signals by restoring the mask.
    - Run the executable in the context of the child process using `execve()`.
-   - If the command is invalid, then print an error.
+   - If the command is invalid, then print an error.  The error that you print
+     should match the format of that printed by the reference shell in the same
+     cirumstances.  See the [example](#non-existent-commands) above.
  - In the parent process:
    - Put the child process in its own process group, for which the group ID is
      the same as the process ID of the child process.  You can use
@@ -823,6 +825,10 @@ valid job, and print an error otherwise.  If the job exists, then update its
 state.  Send a `SIGCONT` signal to the process group of the job.  Finally, if
 `fg` was specified, then wait on the job in the same way that you did in
 `eval()`, i.e., with `waitfg()`.
+
+Any errors that you print should match the format of those printed by the
+reference shell in the same cirumstances.  See the
+[examples](#changing-job-state) above.
 
 
 ## Final Checkpoint
