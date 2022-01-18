@@ -60,7 +60,7 @@ void sig_handler7(int signum) {
 void sig_handler8(int signum) {
 	struct sigaction sigact;
 
-	sigact.sa_flags = 0;
+	sigact.sa_flags = SA_RESTART;
 	sigact.sa_handler = SIG_DFL;
 	sigaction(SIGTERM, &sigact, NULL);
 }
@@ -71,21 +71,11 @@ void sig_handler9(int signum) {
 	printf("%d\n", WEXITSTATUS(status)); fflush(stdout);
 }
 
-int main(int argc, char *argv[]) {
-	int pid, i;
+void install_sig_handlers() {
 	struct sigaction sigact;
-	sigset_t mask;
-	char *args[4];
-	char *env[] = { NULL };
-	char pidstr[32];
-
-	if (argc < 3) {
-		fprintf(stderr, "Usage: %s <killer> [1-7]\n", argv[0]);
-		exit(1);
-	}
 
 	// zero out flags
-	sigact.sa_flags = 0;
+	sigact.sa_flags = SA_RESTART;
 
 	sigact.sa_handler = sig_handler1;
 	sigaction(SIGHUP, &sigact, NULL);
@@ -117,9 +107,53 @@ int main(int argc, char *argv[]) {
 
 	sigact.sa_handler = sig_handler9;
 	sigaction(SIGCHLD, &sigact, NULL);
+}
+
+void sleep_block_loop() {
+	int i;
+	sigset_t mask;
+
+	for (i = 0; i < 20; i++) {
+		sigemptyset(&mask);
+		if (block) {
+			sigaddset(&mask, SIGINT);
+			sigaddset(&mask, SIGCHLD);
+		}
+		sigprocmask(SIG_SETMASK, &mask, NULL);
+		sleep(1);
+	}
+	printf("25\n"); fflush(stdout);
+	exit(0);
+}
+
+void start_killer(int pid, char *cmd, char *scenario_num) {
+	char *args[4];
+	char *env[] = { NULL };
+	char pidstr[32];
+
+	sprintf(pidstr, "%d", pid);
+	args[0] = cmd;
+	args[1] = scenario_num;
+	args[2] = pidstr;
+	args[3] = NULL;
+	if (execve(args[0], &args[0], env) < 0) {
+		perror("execve");
+		exit(1);
+	}
+}
+
+int main(int argc, char *argv[]) {
+	int pid;
+
+	if (argc < 3) {
+		fprintf(stderr, "Usage: %s <killer> [0-9]\n", argv[0]);
+		exit(1);
+	}
 
 	foo = -1;
 	block = 0;
+
+	install_sig_handlers();
 
 	pid = fork();
 	if (pid < 0) {
@@ -127,26 +161,9 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	if (pid == 0) {
-		for (i = 0; i < 20; i++) {
-			sigemptyset(&mask);
-			if (block) {
-				sigaddset(&mask, SIGINT);
-				sigaddset(&mask, SIGCHLD);
-			}
-			sigprocmask(SIG_SETMASK, &mask, NULL);
-			sleep(1);
-		}
-		printf("25\n"); fflush(stdout);
-		exit(0);
+	if (pid > 0) {
+		start_killer(pid, argv[1], argv[2]);
 	} else {
-		sprintf(pidstr, "%d", pid);
-		args[0] = argv[1];
-		args[1] = argv[2];
-		args[2] = pidstr;
-		args[3] = NULL;
-		if (execve(args[0], &args[0], env) < 0) {
-			perror("execve");
-		}
+		sleep_block_loop();
 	}
 }
