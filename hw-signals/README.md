@@ -2,42 +2,185 @@
 
 The purpose of this assignment is to give you hands-on experience with signals.
 Code is provided that has handlers installed for various signals.  You will
-interact with the existing code and change its behavior using the `kill`
+interact with the existing code and change its behavior using the `kill()`
 function.
 
-## Preparation
 
-Each of the files included is described here briefly:
+# Getting Started
 
- - `signals.c`
-   1. installs signal handlers for various signals
-   2. calls `fork()`
-   3. child spins in a mostly uneventful sleep loop for 30 seconds.  In addition
-      to sleeping, it checks each iteration the value of the variable block; if
-      true (non-zero), it uses `sigprocmask()` to block `SIGINT` and `SIGCHLD`.
-   4. the parent calls `execve()` on another executable passed in on the command
-      line (`killer`), which then becomes the code for the parent process.
- - `killer.c`
-   1. Takes scenario (integer, 1 - 7) and (child) process ID from the command
-      line.
-   2. Depending on the scenario, sends signals to the child process using the
-      `kill()` function to get the desired output for each scenario.
- - `Makefile`
-   - Compiles both executables by running `make`.
-   - Runs all scenarios by running `make test`.
+This section is intended to familiarize you with the concepts associated with
+this assigngment and the resources provided to help you complete it, including
+some simple examples of signal usage.  You will begin coding in the
+[instructions](#instructions) section.
 
-To run just one specific scenario, use the following:
+
+## Reading
+
+Read the following in preparation for this assignment:
+ - Section 8.5 in the book
+ - The man pages for the following system calls:
+   - `signal`
+   - `sigprocmask`
+   - `kill`
+
+
+## Resources Provided
+
+ - `signals.c` - installs handlers for a number of signals, and runs a simple
+   `sleep()` loop that is interrupted to handle reception of those signals.
+ - `killer.c` - sends signals to its child process, which is running the code
+   from `signals.c`.  This is where you will do your work!
+ - `Makefile` - Compiles both executables by running `make`.
+
+
+## Building the Binaries
+
+Run the following to build the `signals` and `killer` executables:
+
+```
+make
+```
+
+
+## `signals.c` Overview
+
+`signals` does the following:
+
+ 1. Installs signal handlers for various signals (`install_sig_handlers()`).
+ 2. Calls `fork()`:
+    - The child calls `sleep_block_loop()`, which spins in a mostly uneventful
+      `sleep()` loop for 20 seconds.  In addition to sleeping, it checks each
+      iteration the value of the variable `block`; if true (non-zero), it uses
+      `sigprocmask()` to block `SIGINT` and `SIGCHLD`, otherwise, it unblocks
+      `SIGINT` and `SIGCHLD`.  After the 20 seconds, it simply prints "25" on a
+      line of its own.
+    - The parent calls `start_killer()`, in which `execve()` is invoked to
+      execute the executable passed in on the command line (`killer`), which
+      then becomes the code for the parent process.
+
+
+## `killer.c` Overview
+
+`killer` takes two arguments on the command line:
+ - `scenario` - an integer between 0 and 9, designating the specific scenario
+   that should be run.
+ - `pid` - an integer corresponding to the process ID of the child process,
+   i.e., the one to which signals will be sent.
+
+It then runs a `switch` statement with a `case` for every scenario. Each
+scenario is supposed to yield (specific output)[#desired-output].  The code for
+each scenario will be inserted into each corresponding `case` statement.
+
+
+## Starter Commands
+
+To demonstrate how things work, let's walk through an example.  First, run the following:
 
 ```bash
 $ ./signals ./killer 0
 ```
 
-(substitute `0` with whatever scenario you want to run, 0 through 9)
+This will invoke the code corresponding to `case` "0", which is initially empty:
+```c
+	case '0':
+		break;
+```
+
+That means, that the `sleep()` will simply run uninterrupted.  After 20
+seconds, you should see the following output:
+
+```
+25
+```
+
+Now look closer at the `sig_handler3()` function in `signals.c`:
+
+```c
+void sig_handler3(int signum) {
+	printf("%d\n", foo); fflush(stdout);
+}
+```
+
+This is just a normal function that takes an integer as a parameter.  However,
+the following code installs `sig_handler3()` as a signal handler for `SIGTERM`.
+
+```c
+	sigact.sa_handler = sig_handler3;
+	sigaction(SIGTERM, &sigact, NULL);
+```
+
+Modify the code in `case` "0" of `killer.c`, such that `SIGTERM` is sent the
+child immediately:
+
+```c
+	case '0':
+		kill(pid, SIGTERM);
+		sleep(1);
+		break;
+```
+
+Re-`make` and then re-run the command:
+
+```bash
+$ make
+$ ./signals ./killer 0
+```
+
+You should now see the output associated with `sig_handler3()`--that is, the
+value of `foo`!
+
+
+# Instructions
+
+_This is where you start coding!_
+
+For each of scenarios 0 through 9, flesh out the corresponding `case` statement
+in `killer.c` to elicit the (desired output)[#desired-output].  You may only
+use two functions: `kill()` and `sleep()`.  The first argument to `kill()` will
+always be `pid` (i.e., the process ID corresponding to the child process).  The
+second argument will be an integer corresponding to a signal.  The `sleep()`
+function is just used to help avoid race conditions, so you can reliably plan
+on a statement in the code where the signal will be received.  A call to
+`sleep()` for at _least_ one second will follow every call to `kill()`.
+
+For example, the code for a scenario might look like this:
+
+```c
+kill(pid, SIGHUP);
+sleep(6);
+kill(pid, SIGQUIT);
+sleep(1);
+kill(pid, SIGHUP);
+sleep(3);
+```
+
+(i.e., `kill()`, `sleep()`, `kill()`, `sleep()`, etc.)
+
+The trick, of course, is determine which signals to send and at what times to
+get the desired output.  Look at the handlers closely to see what they do, and
+practice what you know about signal behavior to send the right signals at the
+right times.  Draw a timeline if it will help.
+
+The one special case is `sig_handler7()`.  It appears as though it is just
+changing a global variable.  But changing that global variable in the handler
+results in `SIGINT` and `SIGCHLD` being blocked--or unblocked--in the main
+loop.  While it might have been more intuitive to toggle the blocking of
+`SIGINT` and `SIGCHLD` right in the handler, unfortunately the set of blocked
+signals is overwritten (restored, actually) when a handler returns, and that
+won't be helpful for the exercise at hand.  You are welcome to still think of
+them as having been carried out right in the handler!
+
+You are not allowed to send signals other than those for which handlers are
+installed in `signals.c`.  In particular, you cannot use `SIGKILL`.
+
+You may modify `signals.c` all you want with comments, print statements and
+whatever you want, if it will help you.  In the end, you will just be uploading
+your `killer.c`, and we will use a stock `signals.c` to test against.
 
 
 ## Desired Output
 
-Here is the desired output for each scenario:
+Here is the desired output for each scenario.
 
 ### Scenario 0
 ```
@@ -75,6 +218,7 @@ Here is the desired output for each scenario:
 ```
 1
 ```
+
 ### Scenario 6
 ```
 1
@@ -98,6 +242,7 @@ Here is the desired output for each scenario:
 ```
 
 ### Scenario 9
+Restriction: you cannot use `SIGINT` or `SIGHUP` on this scenario!
 ```
 8
 9
@@ -106,64 +251,19 @@ Here is the desired output for each scenario:
 ```
 
 
-## Code
+# Helps
 
-The only code you will modify is that in the `case` statements in the `switch`
-statement in `killer.c`.  And you will only use the following functions:
-`sleep()` and `kill()`.  The first argument to `kill()` will always be `pid`
-(i.e., the process ID corresponding to the child process).  The second argument
-will be an integer corresponding to a signal, possibly one of the signals for
-which a handler is defined in `signals.c`.  The `sleep()` function is just used
-to help avoid race conditions, so you can reliably plan on a statement in the
-code where the signal will be received.
 
-For example, the code for a scenario might look like this:
+
+# Automated Testing
+
+For your convenience, a script is also provided for automated testing.  This is
+not a replacement for manual testing but can be used as a sanity check.  You
+can use it by simply running the following:
 
 ```
-case '1':
-    kill(pid, SIGINT);
-    sleep(1);
-    kill(pid, SIGTERM);
-    sleep(3);
-    kill(pid, 31);
-    break;
+./driver.py
 ```
-
-(Please note that the statements above are just to show you an example of how
-to apply `kill()` and `sleep()` calls to the `killer.c` file; they do not
-necessarily do anything useful.)
-
-The trick, of course, is what signals to send and at what times, to get the
-desired output.  Look at the handlers closely to see what they do, and practice
-what you know about signal behavior to send the right signals at the right
-times.
-
-The one special case is `sig_handler7()`.  It appears as though it is just
-changing a global variable.  But changing that global variable in the handler
-results in `SIGINT` and `SIGCHLD` being blocked--or unblocked--in the main
-loop.  Those blocks would have been put right in handler, which might have been
-more intuitive, but unfortunately the set of blocked signals is overwritten
-(restored, actually) when a handler returns, and that won't be helpful for the
-exercise at hand.  You are welcome to still think of them as having been
-carried out right in the handler!
-
-You are not allowed to send signals other than those for which handlers are
-installed in `signals.c`.  In particular, you cannot use `SIGKILL`.
-
-
-## Hints
-
- - `ctrl`-`c` will not work for terminating your processes during development
-   because `SIGINT` has been overridden with a handler.  You can, however, use
-   `ctrl`-`z`, then `kill -9 %1`.  This will send the `SIGKILL` signal, which
-   cannot be overridden.
- - You can modify `signals.c` all you want with comments, debug statements and
-   whatever you want, if it will help you.  In the end, you will just be
-   uploading your `killer.c`, and we will use a stock `signals.c` to test against.
- - You will need a `sleep()` statement after every `kill()` call.  At minimum,
-   you should sleep for 1 second, but depending on what you are trying to
-   accomplish, you might need to sleep for longer.  This is to give the target
-   process enough time to receive the signal.
 
 
 ## Submission
