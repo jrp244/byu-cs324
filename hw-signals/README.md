@@ -182,6 +182,11 @@ You may modify `signals.c` all you want with comments, print statements and
 whatever you want, if it will help you.  In the end, you will just be uploading
 your `killer.c`, and we will use a stock `signals.c` to test against.
 
+If you are wondering where to start, take a look at `signals.c`.  Document
+every signal handler, and be clear about what it does.  Start with the ones
+that print something out.  Then work your way backwards, so you can determine
+the steps that will take you to the necessary output.
+
 
 ## Desired Output
 
@@ -258,6 +263,20 @@ Restriction: you cannot use `SIGINT` or `SIGHUP` on this scenario!
 
 # Helps
 
+Remember the following about signals:
+
+ - When a handler is already being run for a given signal that was received, a
+   new instance of that same signal can be _sent_, but it will not be
+   _received_ until the handler has finished running.
+ - When a handler is already being run for a given signal that was received, a
+   a _different_ signal sent will be received, interrupting the current handler.
+   The handler for the first signal will resume when the handler for the
+   interrupting signal has finished.
+ - Assigning `SIG_DFL` as the "handler" for a given signal returns the signal
+   to its default behavior (i.e., as if there was no handler installed).
+ - The default behavior of `SIGCHLD` is to ignore; the default behavior of
+   others, including `SIGTERM` and `SIGINT` is to terminate.  See the man page
+   for `signal(7)` for more.
 
 
 # Automated Testing
