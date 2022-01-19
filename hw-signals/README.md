@@ -86,7 +86,7 @@ This will invoke the code corresponding to `case` "0", which is initially empty:
 		break;
 ```
 
-That means, that the `sleep()` will simply run uninterrupted.  After 20
+That means that the `sleep()` will simply run uninterrupted.  After 20
 seconds, you should see the following output:
 
 ```
@@ -109,7 +109,7 @@ the following code installs `sig_handler3()` as a signal handler for `SIGTERM`.
 	sigaction(SIGTERM, &sigact, NULL);
 ```
 
-Modify the code in `case` "0" of `killer.c`, such that `SIGTERM` is sent the
+Modify the code in `case` "0" of `killer.c`, such that `SIGTERM` is sent to the
 child immediately:
 
 ```c
@@ -129,13 +129,18 @@ $ ./signals ./killer 0
 You should now see the output associated with `sig_handler3()`--that is, the
 value of `foo`!
 
+```
+-1
+25
+```
+
 
 # Instructions
 
 _This is where you start coding!_
 
 For each of scenarios 0 through 9, flesh out the corresponding `case` statement
-in `killer.c` to elicit the (desired output)[#desired-output].  You may only
+in `killer.c` to elicit the [desired output](#desired-output).  You may only
 use two functions: `kill()` and `sleep()`.  The first argument to `kill()` will
 always be `pid` (i.e., the process ID corresponding to the child process).  The
 second argument will be an integer corresponding to a signal.  The `sleep()`
