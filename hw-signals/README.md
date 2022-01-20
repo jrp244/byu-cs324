@@ -9,7 +9,7 @@ function.
 # Getting Started
 
 This section is intended to familiarize you with the concepts associated with
-this assigngment and the resources provided to help you complete it, including
+this assignment and the resources provided to help you complete it, including
 some simple examples of signal usage.  You will begin coding in the
 [instructions](#instructions) section.
 
@@ -49,8 +49,8 @@ make
  1. Installs signal handlers for various signals (`install_sig_handlers()`).
  2. Calls `fork()`:
     - The child calls `sleep_block_loop()`, which spins in a mostly uneventful
-      `sleep()` loop for 20 seconds.  In addition to sleeping, it checks each
-      iteration the value of the variable `block`; if true (non-zero), it uses
+      `sleep()` loop for 20 seconds.  In addition to sleeping, it checks 
+      the value of the variable `block` each iteration; if true (non-zero), it uses
       `sigprocmask()` to block `SIGINT` and `SIGCHLD`, otherwise, it unblocks
       `SIGINT` and `SIGCHLD`.  After the 20 seconds, it simply prints "25" on a
       line of its own.
@@ -68,7 +68,7 @@ make
    i.e., the one to which signals will be sent.
 
 It then runs a `switch` statement with a `case` for every scenario. Each
-scenario is supposed to yield (specific output)[#desired-output].  The code for
+scenario is supposed to yield a [specific output](#desired-output).  The code for
 each scenario will be inserted into each corresponding `case` statement.
 
 
@@ -161,7 +161,7 @@ sleep(3);
 
 (i.e., `kill()`, `sleep()`, `kill()`, `sleep()`, etc.)
 
-The trick, of course, is determine which signals to send and at what times to
+The trick, of course, is to determine which signals to send and at what times to
 get the desired output.  Look at the handlers closely to see what they do, and
 practice what you know about signal behavior to send the right signals at the
 right times.  Draw a timeline if it will help.
@@ -268,10 +268,10 @@ Remember the following about signals:
  - When a handler is already being run for a given signal that was received, a
    new instance of that same signal can be _sent_, but it will not be
    _received_ until the handler has finished running.
- - When a handler is already being run for a given signal that was received, a
-   a _different_ signal sent will be received, interrupting the current handler.
+ - When a handler is already being run for a given signal that was received, if
+   a _different_ signal is received, the current (first) handler will be interupted.
    The handler for the first signal will resume when the handler for the
-   interrupting signal has finished.
+   interrupting (second) signal has finished.
  - Assigning `SIG_DFL` as the "handler" for a given signal returns the signal
    to its default behavior (i.e., as if there was no handler installed).
  - The default behavior of `SIGCHLD` is to ignore; the default behavior of
