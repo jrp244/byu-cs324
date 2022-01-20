@@ -681,10 +681,12 @@ that you just added when the process finishes.
 
 `waitpid()` is the key function that you will in `sigchld_handler()`.  Read the
 man page for `waitpid()` if you haven't already, and pay special attention to
-1) the different options for the `pid` parameter, 2) the different options for
-the `options` parameter (note: multiple options can be specified by using the
-bitwise-OR `|` operator), and 3) the macros that can operate on the value of
-`status` after `waitpid()` returns.
+the following:
+ - the different options for the `pid` parameter;
+ - the different options for the `options` parameter (note: multiple options
+   can be specified by using the bitwise-OR `|` operator); and
+ - the macros that can operate on the value of `status` after `waitpid()`
+   returns.
 
 Now do the following:
 
