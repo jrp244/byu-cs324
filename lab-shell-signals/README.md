@@ -421,7 +421,7 @@ At this point, there should be an additional understanding of the following:
    - Pressing `ctrl`+`z` or `ctrl`+`c` while a job is in the foreground sends a
      signal to the shell, which is, in turn, sent to the process group
      associated with the foreground job.
-   - A process can use the `kill() system call to send a signal directly to the
+   - A process can use the `kill()` system call to send a signal directly to the
      process associated with a job.
  - Whichever method is used, the shell will detect that there was a change.
  - The shell will end when EOF is encountered or when the built-in command
