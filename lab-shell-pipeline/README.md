@@ -336,7 +336,7 @@ arguments passed have the following values:
    argv[8] = NULL;
    ```
 
-   Because `execve()` takes are its second argument "an array of pointers to
+   Because `execve()` takes as its second argument "an array of pointers to
    null-terminated strings that represent the argument list" (ref: `man exec`),
    the `NULL` after each command and its arguments creates a natural delimiter
    for that command.  For example, `argv[cmds[0]]` can be passed as the `argv`
