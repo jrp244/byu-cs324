@@ -514,7 +514,11 @@ For each pair of commands, the process is:
      group ID that should be used.
 
 Of course, you will need to make this work with an arbitrary number of command
-pairs.  A carefully designed loop can help with this.
+pairs.  A carefully designed loop can help with this.  For example, while your
+`pipe()` call must happen before both of your calls to `fork()`  (i.e., for a
+pair of commands / child processes), but it could be that iteration `i`
+handles the `pipe()` call for a pair, but the corresponding `fork()` calls
+happen in iteration `i` and `i + 1`.
 
 The processes for all commands in a pipeline should be in the same progress
 group, and it is a different group than that of the parent (i.e., the shell).
