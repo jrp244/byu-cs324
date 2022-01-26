@@ -512,13 +512,18 @@ For each pair of commands, the process is:
  - In the parent process:
    - Assign the child process to a new group.  See instructions below for the
      group ID that should be used.
+   - Close any open file descriptors that are exclusively for use by the
+     child processes.
 
 Of course, you will need to make this work with an arbitrary number of command
 pairs.  A carefully designed loop can help with this.  For example, while your
 `pipe()` call must happen before both of your calls to `fork()`  (i.e., for a
 pair of commands / child processes), it could be that iteration `i` handles
 the `pipe()` call for a pair, but the corresponding `fork()` calls happen in
-iteration `i` and `i + 1`.
+iteration `i` and `i + 1`.  But as you iterate, remember that each call to
+`pipe()` yields two file descriptors.  Those descriptors are simply integers,
+but you will want to keep track of their values until they been served their
+purpose--e.g., for `dup2()`, `close()`, etc.
 
 The processes for all commands in a pipeline should be in the same progress
 group, and it is a different group than that of the parent (i.e., the shell).
