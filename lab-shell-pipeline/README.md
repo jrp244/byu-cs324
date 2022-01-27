@@ -339,9 +339,9 @@ arguments passed have the following values:
    Because `execve()` takes as its second argument "an array of pointers to
    null-terminated strings that represent the argument list" (ref: `man exec`),
    the `NULL` after each command and its arguments creates a natural delimiter
-   for that command.  For example, `argv[cmds[0]]` can be passed as the `argv`
-   argument to `execve()` for the first command, `argv[cmds[1]]` for the
-   second, etc.
+   for that command.  For example, `argv[cmds[0]]` can be passed as the
+   `filename` argument to `execve()` for the first command, `argv[cmds[1]]`
+   as the `filename` argument for the second, etc.
 
  - `stdin_redir` and `stdout_redir` have (like `cmds`) been populated with as
    many commands as have been identified in the pipeline (two in this case). In
