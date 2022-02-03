@@ -206,8 +206,8 @@ In this case:
 
 ### Non-Existent Commands
 
-The shell is no dummy.  If you pass it a command is neither the valid path of
-an executable nor a built-in command, it will complain!
+The shell is no dummy.  If you pass it a command that is neither the valid path
+of an executable nor a built-in command, it will complain!
 
 ```bash
 tsh> /does/not/exist
