@@ -132,7 +132,7 @@ command:
  - `/bin/sleep 10 &` - the command entered on the command line, including the
    `&` operator.
 
-If enter `jobs` at the prompt while `/bin/sleep 10` is still running in the
+If you enter `jobs` at the prompt while `/bin/sleep 10` is still running in the
 background, you will see a list of all the currently stopped and
 _backgrounded_ jobs, noting that there is, at the moment, only one:
 
@@ -241,7 +241,7 @@ So far we have simply _started_ commands in either the foreground or the
 background and let them run to completion.  But this shell can also change the
 state of a job, _after_ it has started running.  A few examples follow.
 
-To change the state of a foreground job to _stopped, _press `ctrl`+`z`:
+To change the state of a foreground job to _stopped_, press `ctrl`+`z`:
 
 ```bash
 tsh> /bin/sleep 20
