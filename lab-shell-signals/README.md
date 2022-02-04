@@ -547,7 +547,10 @@ Several functions have been written to help you parse the command line.
 
 `parseline()` finds all the words (i.e., non-whitespace characters separated by
 whitespace) on the command line and puts them into an array of strings which
-is passed in as an argument: `char **argv` (i.e., an array of `char *`).
+is passed in as an argument: `char **argv` (i.e., an array of `char *`).  It
+returns true if the last word on the command line is the background operator,
+`&`; false otherwise.  Thus, you can use the return value to determine whether
+or not the job should start out in the background or foreground, respectively.
 
 For example, suppose the following command line is provided to your shell:
 
@@ -565,6 +568,24 @@ argv[2] = NULL;
 
 (A `NULL` value at index 2 indicates that that there are no more words, so your
 code can detect that programmatically.)
+
+In this case, `parseline()` will return `0` (false).  However, if the command
+line had been the following:
+
+```bash
+$ /bin/cat test.txt &
+```
+
+Then `argv` would contain the following after calling `parseline()`:
+
+```c
+argv[0] = "/bin/cat";
+argv[1] = "test.txt";
+argv[2] = "&";
+argv[3] = NULL;
+```
+
+In this case, `parseline()` would return `1` (true).
 
 
 #### Job Handling Functions
