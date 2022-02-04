@@ -590,7 +590,9 @@ In this case, `parseline()` would return `1` (true).
 
 #### Job Handling Functions
 
-The following functions are used for 
+The following functions are used for manipulating the global array of job
+structures (`struct job_t`), `jobs`:
+
  - `clearjob()` - clears the entries in a job struct
  - `maxjid()` - returns the largest allocated job ID
  - `addjob()` - adds a job to the job list
