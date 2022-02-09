@@ -653,8 +653,8 @@ indicator that the command passed in was _not_ a built-in command.
 
 Parse the command line using `parseline()`.  Call `builtin_cmd()` to see if the
 command line corresponds to a built-in command.  Otherwise, do the following:
- - Fork a child process.
  - Block `SIGCHLD`, `SIGINT`, and `SIGTSTP` signals.
+ - Fork a child process.
  - In the child process:
    - Unblock signals by restoring the mask.
    - Run the executable in the context of the child process using `execve()`.
