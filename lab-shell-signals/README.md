@@ -42,11 +42,14 @@ Read the following in preparation for this assignment:
   - Sections 8.2 - 8.5
   - The man pages for the following system calls:
     - `fork()`
-    - `signal()`
+    - `signal`
+    - `sigaction()`
+    - `sigprocmask()`
     - `waitpid()`
     - `exec`
     - `execve()`
     - `setpgid()`
+    - `kill()`
 
 
 ## Resources Provided
