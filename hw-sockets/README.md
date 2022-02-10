@@ -157,7 +157,7 @@ $ ./server -4 port
 
 The `-4` forces the server to prepare the socket to receive incoming messages
 only on its IPv4 addresses.  While it is possible to have a program listen on
-both IPv4 _and_ IPv6, that requires _two_ sockets--one for each protocol, and
+both IPv4 _and_ IPv6, that requires _two_ sockets--one for each protocol--and
 that goes beyond the scope of this assignment, so using either `-4` or `-6`
 designates which specific single address family (IP version) to use, IPv4 or
 IPv6, respectively.
@@ -235,7 +235,8 @@ to both client and server code to better understand what is going on:
 
  - Modify `server.c`:
    - sleeps for 2 seconds immediately after calling `recvfrom()` on the socket.
-   - remove any `printf()` statements that you added for illustrative purposes.
+   - remove the `printf()` statements that you added earlier around the
+     `recvfrom()` statement.
  - Modify `client.c` such that it does not attempt to read from the
    socket--or print what it read--after writing to the socket.  Comment out
    the code associated with the `read()` and `printf()` as described.
@@ -253,15 +254,15 @@ With the server running on the remote host, execute (again) the client command
 you ran previously in the top-right "local" pane, sending the same strings as
 before.
 
- 6. *How many total calls to `send()` / `write()` were made by the client?*
-    Refer to `client.c`. Use `printf()` statements if necessary.
- 7. *How many messages were received by the kernel of the server-side process
+ 7. *How many total calls to `send()` / `write()` were made by the client?*
+    Refer to `client.c`.
+ 8. *How many messages were received by the kernel of the server-side process
     _before_ the server called `recvfrom()` the second time?*
- 8. *How many total calls to `recvfrom()` were required for the server process
+ 9. *How many total calls to `recvfrom()` were required for the server process
     to read all the messages/bytes that were sent?*
- 9. *Why didn't the server read all the messages that were ready with a single
-    call to `recvfrom()`?*  Hint: see the man page for `udp`, specifically
-    within the first three paragraphs of the "DESCRIPTION" section.
+ 10. *Why didn't the server read all the messages that were ready with a single
+     call to `recvfrom()`?*  Hint: see the man page for `udp`, specifically
+     within the first three paragraphs of the "DESCRIPTION" section.
 
 
 ## Part 2: TCP Sockets
@@ -282,8 +283,9 @@ Make the following modifications:
 
  - Modify `client.c`:
    - Make the socket use TCP instead of UDP.
-   - Add a 30-second sleep immediately after the call to `connect()`.
-   - Uncomment the read/print code that you commented out in Part 2.
+   - Add a 30-second `sleep()` immediately before the `for` loop in which the
+     messages are sent to the server.
+   - Uncomment the read/print code that you commented out in Part 1.
 
  - Modify `server.c`:
    - Make the server socket use TCP instead of UDP.
@@ -300,10 +302,11 @@ Make the following modifications:
        `recvfrom()`, further down.
      - You will need to initialize `peer_addr_len` before it is used with
        `accept()`, just as it is currently initialized before being called with
-       `recvfrom().
-   - Change the `recvfrom()` call to `recv()` (note that you just need to
-     remove some of the arguments).
-   - Comment out the `sleep()` call that you added out in Part 2.
+       `recvfrom()`.
+   - Change the `recvfrom()` call to `recv()`  and the `sendto()` call to
+     `send()`.  Note that you just need to remove some of the arguments for
+     each.
+   - Comment out the `sleep()` call that you added in Part 1.
    - Use the file descriptor returned by `accept()` in the `recv()` and
      `send()` calls (i.e., the client socket).
    - If `recv()` returns 0 bytes, then:
@@ -314,18 +317,18 @@ Make the following modifications:
 Re-run `make` to rebuild both binaries.  Interrupt and restart the server in
 the top-left "remote" pane.
 
- 10. *How does the role of the original socket (i.e., `sfd`, returned from the
-    call to `socket()`), after `listen()` is called on it, compare with the
-    role of the socket returned from the call to `accept()`?*  See the man
-    pages for `listen()` and `accept()`.
+ 11. *How does the role of the original socket (i.e., `sfd`, returned from the
+     call to `socket()`), after `listen()` is called on it, compare with  the
+     role of the socket returned from the call to `accept()`?*  See the man
+     pages for `listen()` and `accept()`.
 
- 11. *With the new changes you have implemented, how have the semantics
-    associated with the call to `connect()` changed?  That is, what will happen
-    now when you call `connect()` that is different from when you called
-    `connect()` with a UDP socket?*  See the man pages for `connect()`, `tcp`,
-    and `udp`.
+ 12. *With the new changes you have implemented, how have the semantics
+     associated with the call to `connect()` changed?  That is, what will
+     happen now when you call `connect()` that is different from when you
+     called `connect()` with a UDP socket?*  See the man pages for `connect()`,
+     `tcp`, and `udp`.
 
-While the server is running on the remote host in the top-left "remote" pane),
+While the server is running on the remote host in the top-left "remote" pane,
 run the following in the top-right "local" pane:
 
 ```bash
@@ -357,16 +360,15 @@ the local port that you have selected for the server by adding the following
 (replace the "port" on the right-hand side of the colon with the actual port
 you used).
 
-Use the man page for `ss` for more on how to use these options.
+See the man page for `ss` for more on how to use these options.
 
- 12. *Why does the `ss` output show a relationship between client and server
-     before any messages are sent from client to server?* Hint: see the man
-     page for `tcp`, specifically within the first two paragraphs of the
-     "DESCRIPTION" section.
-
+ 13. *Why does the `ss` output show an established connection ("ESTAB") between
+     client and server before any messages are sent from client to server?*
+     Hint: see the man page for `tcp`, specifically within the first two
+     paragraphs of the "DESCRIPTION" section.
 
 Make the following modification:
-  - Remove the 30-second `sleep()`.
+  - In `client.c`, remove the 30-second `sleep()`.
 
 Re-run `make` to rebuild both binaries.  Interrupt and restart the server in
 the top-left "remote" pane.
@@ -378,16 +380,17 @@ $ ./client -4 hostname port foo bar abc123
 $ ./client -4 hostname port foo bar abc123
 ```
 
- 13. The server prints out the remote (i.e., client-side) address and port
+ 14. The server prints out the remote (i.e., client-side) address and port
      associated with the incoming message.  *What do you notice about the port
      value used by the client for different messages sent using the _same_
      socket (i.e., from running `./client` a single time)?*
- 14. *What do you notice about the port value used by the client for different
+ 15. *What do you notice about the port value used by the client for different
      messages sent using _different_ sockets (i.e., from running `./client`
      multiple times)?*
- 15. *Looking inside `server.c`, how many sockets does the server use to
+ 16. *Looking inside `server.c`, how many sockets does the server use to
      communicate with multiple clients?*  For example, one for _each_ client,
-     one for _all_ clients, etc.
+     one for _all_ clients, etc.  *How does this compare to the answer to the
+     behavior for a server-side UDP socket (see #6)?*
 
 Make the following modifications, which mirror those made in part 2:
 
@@ -406,13 +409,13 @@ pane), run the following in the top-right "local" pane:
 $ ./client -4 hostname port foo bar abc123
 ```
 
- 16. *How many total calls to `send()` / `write()` were made by the client?*
-     Refer to `client.c`. Use `printf()` statements if necessary.
- 17. *How many messages were received by the kernel of the server-side process
+ 17. *How many total calls to `send()` / `write()` were made by the client?*
+     Refer to `client.c`.
+ 18. *How many messages were received by the kernel of the server-side process
      _before_ the server called `recvfrom()` the second time?*
- 18. *How many total calls to `recvfrom()` were required for the server process
+ 19. *How many total calls to `recvfrom()` were required for the server process
      to read all the messages/bytes that were sent?*
- 19. *How and why does the answer to 18 differ from that from 8?*
+ 20. *How and why does the answer to #18 differ from that from #9?*
      Hint: see the man page for `tcp`, specifically within the first paragraph
      of the "DESCRIPTION" section.
 
@@ -449,8 +452,8 @@ In the top-left "remote" pane, start a netcat (`nc` command) server listening
 for incoming TCP connections on a port of your choosing, and such that its
 output is piped to the `sha1sum` command:
 
-```
-nc -l port
+```bash
+$ nc -l port
 ```
 
 (Replace `port` with a port of your choosing.)
@@ -458,8 +461,8 @@ nc -l port
 Now test your client program by running the following in the top-right "local"
 pane:
 
-```
-./client < alpha.txt
+```bash
+$ ./client < alpha.txt
 ```
 
 Because the open file descriptor associated with `alpha.txt` will be duplicated
@@ -469,21 +472,21 @@ and sent over the socket to `nc`, which should print them out to the console.
 To ensure that all bytes from the file were sent by `client` and received by
 `server`, re-run `nc`, this time piping its standard output to `sha1sum`:
 
-```
-nc -l port | sha1sum
+```bash
+$ nc -l port | sha1sum
 ```
 
 Then re-run the client program:
 
-```
-./client < alpha.txt
+```bash
+$ ./client < alpha.txt
 ```
 
- 20. *What is the output of `sha1sum`?*
+ 21. *What is the output of `sha1sum`?*
 
-     Hint: it should be:
-     ```
-     0ef39a3f241cdd6552ad131e01afa9171b3dab8d
+     Hint: it should match the output of the following:
+     ```bash
+     $ sha1sum < alpha.txt
      ```
 
 Modify `client.c`:
@@ -531,15 +534,15 @@ Note that after you have run your program, `bestill.txt` should contain:
  - all three verses to a hymn.
 
 
- 21. *Show the command pipeline that you used to run your client program and
+ 22. *Show the command pipeline that you used to run your client program and
      issue the request.*
 
- 22. *Show the output to the following:*
+ 23. *Show the output to the following:*
      ```bash
-     $ sha1sum bestill.txt
+     $ cat bestill.txt
      ```
 
-The last command execution involved an HTTP request for a file of type
+The previous command execution involved an HTTP request for a file of type
 "text/plain", which, of course, is a plaintext file.  Now we will try to
 retrieve an image file, with arbitrary byte values.  Execute your client
 program such that:
@@ -556,12 +559,12 @@ output, so that you are left with just the content.  The file `socket.jpg`
 should now contain a jpeg image that you can open and view with a suitable
 program (e.g., a Web browser) to check its correctness.
 
- 23. *Show the command pipeline that you used to run your client program and
+ 24. *Show the command pipeline that you used to run your client program and
      issue the request.*
 
- 24. *Show the output to the following:*
+ 25. *Show the output to the following:*
      ```bash
-     $ sha1sum bestill.txt
+     $ sha1sum socket.jpg
      ```
 
 
@@ -571,16 +574,16 @@ For this final set of questions, you are welcome to refer to previous
 code/questions, set up your own experiments, and/or read the man pages for
 `recv()` (especially), `tcp`, and `udp`.
 
- 25. What happens when you call `read()` (or `recv()`) on an open socket (UDP
+ 26. What happens when you call `read()` (or `recv()`) on an open socket (UDP
      or TCP), and there are no messages are available at the socket for reading?
      Hint: see the man page for `recv()`, especially the "DESCRIPTION" section.
 
- 26. What happens when you call `read()` (or `recv()`) on an open socket (UDP
+ 27. What happens when you call `read()` (or `recv()`) on an open socket (UDP
      or TCP), and the amount of data available is less than the requested
      amount?  Hint: see the man page for `recv()`, especially the "DESCRIPTION"
      section.
 
- 27. What happens you you call `read()` (or `recv()`) on an open UDP socket,
+ 28. What happens you you call `read()` (or `recv()`) on an open UDP socket,
      and you specify a length that is less than the length of the next
      datagram?  Hint: see the man page for `udp`, specifically within the first
      three paragraphs of the "DESCRIPTION" section.
