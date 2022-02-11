@@ -579,16 +579,15 @@ line had been the following:
 $ /bin/cat test.txt &
 ```
 
-Then `argv` would contain the following after calling `parseline()`:
+Then `argv` would still contain the following after calling `parseline()`:
 
 ```c
 argv[0] = "/bin/cat";
 argv[1] = "test.txt";
-argv[2] = "&";
-argv[3] = NULL;
+argv[2] = NULL;
 ```
 
-In this case, `parseline()` would return `1` (true).
+But `parseline()` would return `1` (true).
 
 
 #### Job Handling Functions
