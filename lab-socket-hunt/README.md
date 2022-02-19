@@ -9,19 +9,19 @@ remote port assignment, IPv4 and IPv6, message parsing, and more.
 
 # Overview
 
-This lab involves a game between two parties: the *participant* and the
-*director*.  The director runs on a CS lab machine, awaiting incoming
-communications, acting initially as a server.  The participant initiates
-communications with the director, acting as a client, requesting the first
-chunk of the treasure, as well as directions to get the next chunk.  The
-participant and director continue this pattern of requesting direction and
-following direction, until the full treasure has been received.
+This lab involves a game between two parties: the *client* and the *server*.
+The server runs on a CS lab machine, awaiting incoming communications.
+The client, also running on a CS lab machine, initiates communications with the
+server, requesting the first chunk of the treasure, as well as directions to
+get the next chunk.  The client and server continue this pattern of requesting
+direction and following direction, until the full treasure has been received.
+Your job is to write the client.
 
 
 ## Initial Request
 
-The very first message that the participant sends should be exactly 8 bytes
-long and have the following format:
+The very first message that the client sends should be exactly 8 bytes long and
+have the following format:
 
 <table border="1">
 <tr>
@@ -43,16 +43,16 @@ long and have the following format:
    $ id -u
    ```
  - Bytes 6 - 7: an `unsigned short` used, along with the user ID, to seed the
-   pseudo-random number generator used by the director, in network byte order.
+   pseudo-random number generator used by the server, in network byte order.
 
-   This is used to allow the participant to experience consistent behavior
-   every time they interact with the director, to help with development and
+   This is used to allow the client to experience consistent behavior every
+   time they interact with the server, to help with development and
    troubleshooting.
 
 
 ## Directions Response
 
-Responses from the director are of variable length (but any given message will
+Responses from the server are of variable length (but any given message will
 consistent of fewer than 64 bytes) and will follow this format:
 
 <table border="1">
@@ -69,17 +69,17 @@ consistent of fewer than 64 bytes) and will follow this format:
 
  - Byte 0: an `unsigned char`.
    - If 0: the hunt is over.  All chunks of the treasure have been received in
-     previous messages from the director.
+     previous messages from the server.
    - If between 1 and 127: A chunk of the message, having length corresponding
      to the value of byte 0, immediately follows, beginning with byte 1.
-   - If greater than 127: The director detected an error and is alerting the
-     participant of the problem:
+   - If greater than 127: The server detected an error and is alerting the
+     client of the problem:
      - 129: The message was sent from an unexpected address or port (i.e., the
-       source address or port of the packet received by the director).
+       source address or port of the packet received by the server).
      - 130: The message had an incorrect length.
      - 131: The value of the nonce was incorrect.
-     - 133: After multiple tries the director was unable to bind properly to
-       the address and port that it had attempted.
+     - 133: After multiple tries the server was unable to bind properly to the
+       address and port that it had attempted.
    Note that in the case where byte 0 has value 0 or a value greater than 127,
    the entire message will only be one byte long.
  - Bytes 1 - `n` (where `n` matches the value of byte 0; only applies where `n`
@@ -91,15 +91,15 @@ consistent of fewer than 64 bytes) and will follow this format:
    - 0: Do not change anything; just send back the nonce value plus 1.
    - 1: Use the port specified by the next two bytes (`n + 2` and `n + 3`),
      which is an `unsigned short` in network byte order, as the new remote
-     port.  The result is that future communications *to* the director will be
+     port.  The result is that future communications *to* the server will be
      directed *to* this port (i.e., the *destination*) port), and future
-     communications *from* the director will come *from* this port (i.e., the
+     communications *from* the server will come *from* this port (i.e., the
      *source* port).
    - 2: Bind (i.e., using `bind()`) to the local port specified by the next two
      bytes (`n + 2` and `n + 3`), which is an `unsigned short` in network
-     byte order.  The result is that future communications *to* the director
-     will come *from* this port (i.e., the *source* port), and future
-     communications *from* the director will be directed *to* that port (i.e.,
+     byte order.  The result is that future communications *to* the server will
+     come *from* this port (i.e., the *source* port), and future
+     communications *from* the server will be directed *to* that port (i.e.,
      the *destination* port).
    - 3: Read `m` datagrams from the socket (i.e., using the currently
      established local and remote ports), where `m` is specified by the next
@@ -111,7 +111,7 @@ consistent of fewer than 64 bytes) and will follow this format:
      of each will represent an `unsigned short` in network byte order.  The
      values of included in each of the `m` datagrams should be added together,
      and their sum is the nonce, whose value (plus 1) should be returned with
-     the next communication to the director.  Note that the sum of these values
+     the next communication to the server.  Note that the sum of these values
      might well sum to something that exceeds the 16 bits associated with an
      `unsigned short` (16 bits).  Thus, you will want to store the sum with an
      `unsigned int` (32 bits).
@@ -123,7 +123,7 @@ consistent of fewer than 64 bytes) and will follow this format:
    1 through 3; for op-codes 0 and 4, it exists but can be ignored.
  - Bytes `n + 4` - `n + 7`: These bytes, an `unsigned int` in network byte
    order, is the nonce, whose value, plus 1, should be returned in every
-   communication back to the director.  In the case of op-code 4, this field is
+   communication back to the server.  In the case of op-code 4, this field is
    ignored.
 
 ## Directions Request
@@ -139,36 +139,36 @@ and will have the following format:
 </table>
 
  - Bytes 0 - 3: an `unsigned int` having a value of one more than the nonce
-   most recently sent by the director, in network byte order.  For example, if
-   the director previously sent, 100, then this value would be 101.
+   most recently sent by the server, in network byte order.  For example, if
+   the server previously sent, 100, then this value would be 101.
 
 
 ## Levels
 
 The level sent to the server is one of the following:
 
- - 0: Responses from the director will only use op-code 0.  Level 0 is to get
-   practice exchanging datagrams with the director, and with each exchange: 1)
-   extracting the chunk of treasure that is included in the director's response;
+ - 0: Responses from the server will only use op-code 0.  Level 0 is to get
+   practice exchanging datagrams with the server, and with each exchange: 1)
+   extracting the chunk of treasure that is included in the server's response;
    and 2) extracting nonce and returning the nonce + 1.
- - 1: Responses from the director will only use op-code 1.  That is, the
-   participant should be expected to do everything it did at level 0, but also
-   to extract the remote port from each directions response and use `connect()`
-   or `sendto()` to use it with each outgoing message (i.e., op-code 1).
- - 2: Responses from the director will select from op-codes 1 and 2 at random.
-   That is, the participant should be expected to do everything it did at level
-   1, but also to extract the new local port from each directions response and
-   use it for all for future outgoing communications.  In this case, the old
-   socket should be closed, and a new socket created, which is bound (i.e., by
-   calling `bind()` to the new local port.
- - 3: Responses from the director will select from op-codes 1 through 3 at
-   random.  That is, the participant should be expected to do everything it did
+ - 1: Responses from the server will only use op-code 1.  The client should be
+   expected to do everything it did at level 0, but also to extract the remote
+   port from each directions response and use `connect()` or `sendto()` to use
+   it with each outgoing message (i.e., op-code 1).
+ - 2: Responses from the server will select from op-codes 1 and 2 at random.
+   That is, the client should be expected to do everything it did at level 1,
+   but also to extract the new local port from each directions response and use
+   it for all for future outgoing communications.  In this case, the old socket
+   should be closed, and a new socket created, which is bound (i.e., by calling
+   `bind()` to the new local port.
+ - 3: Responses from the server will select from op-codes 1 through 3 at
+   random.  That is, the client should be expected to do everything it did
    at level 2, but also to extract the number of datagrams to immediately
-   receive from the director, as well as receive and sum the payloads of those
+   receive from the server, as well as receive and sum the payloads of those
    datagrams, in order to get the nonce.
- - 4: Responses from the director will select from op-codes 1 through 4 at
-   random.  That is, the participant should be expected to do everything it did
-   at level 3, but also to switch to IPv4 or IPv6, from whichever it was using 
+ - 4: Responses from the server will select from op-codes 1 through 4 at
+   random.  That is, the client should be expected to do everything it did at
+   level 3, but also to switch to IPv4 or IPv6, from whichever it was using 
    before.
 
 
@@ -241,8 +241,8 @@ arrays of `unsigned char`.
 
 ## Socket Setup and Manipulation
 
- - All communications between participant and director are over UDP, so all
-   sockets are of type `SOCK_DGRAM`.
+ - All communications between client and server are over UDP, so all sockets
+   are of type `SOCK_DGRAM`.
  - Sending every message requires exactly one call to `write()`, `send()`, or
    `sendto()`.
  - Receiving every message requires exactly one call to `read()`, `recv()`, or
@@ -256,7 +256,7 @@ arrays of `unsigned char`.
  - Even if `bind()` has *not* been called on a socket, if a local address and
    port have been associated with the socket implicitly by calling `write()`,
    `send()`, or `sendt()`, `bind()` cannot be called on that socket.
- - If the participant is designated to use a new local port, and one is already
+ - If the client is designated to use a new local port, and one is already
    associated with the socket, then the current socket must be closed, and a
    new one must be created, so that `bind() can be called.
  - A socket can be associated with only one address family.  For this lab, it
@@ -271,7 +271,7 @@ arrays of `unsigned char`.
    ```c
    	hints.ai_family = AF_INET6;
    ```
- - If the participant is designated to use a different address family, then the
+ - If the client is designated to use a different address family, then the
    current socket must be closed, and a new one must be created using the new
    address family.
  - The initial communication from the client *must* be over IPv4.
@@ -285,8 +285,8 @@ Your program should have the following usage:
 ./treasure_hunter server port seed
 ```
 
- - `server`: the domain name of the server acting as the director.
- - `port`: the port on which the director is listening.
+ - `server`: the domain name of the server.
+ - `port`: the port on which the server is expecting initial communications.
  - `seed`: a seed used to initialize the pseudo-random number generator on the
    server.
 
@@ -295,15 +295,15 @@ Your program should have the following usage:
 
 ### Treasure - standard output
 
-Once the participant has collected all of the treasure chunks, it should print
-the entire treasure to standard output, followed by a newline.  For example, if
-the treasure hunt yielded the following chunks:
+Once the client has collected all of the treasure chunks, it should print the
+entire treasure to standard output, followed by a newline.  For example, if the
+treasure hunt yielded the following chunks:
 
  - `abc`
  - `de`
  - `fghij`
 
-Then the participant would print:
+Then the client would print:
 
 ```
 abcdefghij
@@ -316,9 +316,9 @@ end with a null byte, so they can be used with `printf()`.
 
 ### Socket Information - standard error
 
-Every time the participant sends a message using `write()` or `send()`, it
-should print the source address, source port, destination address, and
-destination port to standard error, such as in the following example:
+Every time the client sends a message using `write()` or `send()`, it should
+print the source address, source port, destination address, and destination
+port to standard error, such as in the following example:
 
 ```
 192.0.2.1:1234 -> 192.0.2.2:4567
@@ -330,9 +330,9 @@ or, for IPv6:
 2001:db8::1:1234 -> 2001:db8::2:4567
 ```
 
-Thus, if your participant sent 10 messages to the director over the course of
-the game, there would be 10 lines printed to standard error, each resembling
-the lines above, but each slightly different from the other (because source and
+Thus, if your client sent 10 messages to the server over the course of the
+game, there would be 10 lines printed to standard error, each resembling the
+lines above, but each slightly different from the other (because source and
 destination ports will be changing).
 
 You will find the `getsockname()`, `getpeername()`, and `getnameinfo()`
@@ -485,9 +485,9 @@ might be initiated:
  - utah.cs.byu.edu:32400
  - redwood.cs.byu.edu:32400
 
-Note that communicating with any server should result the same behavior.
-But for the purposes of load balancing, please run the following commands from
-one of the CS lab machines to select the *primary* machine that you should use:
+Note that communicating with any server should result the same behavior.  But
+for the purposes of load balancing, please run the following commands from one
+of the CS lab machines to select the *primary* machine that you should use:
 
 ```bash
 $ hosts=(rome qatar utah redwood)
