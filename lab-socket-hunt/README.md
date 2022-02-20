@@ -215,8 +215,8 @@ unsigned char buf[64];
 ```
 
 If that initial message has values 1, 3985678983 (0xed90a287), and 7719
-(0x1e27) for level, user ID, and seed, respectively, the values stored in that
-buffer might look like this, after it is populated:
+(or, equivalently, 0x1e27) for level, user ID, and seed, respectively, the
+values stored in that buffer might look like this, after it is populated:
 
 ```c
 buf = { 0, 1, 0xed, 0x90, 0xa2, 0x87, 0x1e, 0x27 };
