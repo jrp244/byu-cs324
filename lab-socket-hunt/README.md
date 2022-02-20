@@ -6,6 +6,31 @@ remote port assignment, IPv4 and IPv6, message parsing, and more.
 
 # Table of Contents
 
+ - [Overview](#overview)
+   - [Initial Request](#initial-request)
+   - [Directions Response](#directions-response)
+   - [Directions Request](#directions-request)
+   - [Levels](#levels)
+   - [Message Formatting](#message-formatting)
+   - [Socket Setup and Manipulation](#socket-setup-and-manipulation)
+   - [Usage](#usage)
+   - [Output](#output)
+ - [Preparation](#preparation)
+   - [Reading](#reading)
+ - [Instructions](#instructions)
+   - [Getting Started](#getting-started)
+   - [Initial Send and Receive](#initial-send-and-receive)
+   - [Collect and Print the Level 0 Treasure](#collect-and-print-the-level-0-treasure)
+   - [Print the Socket Information](#print-the-socket-information)
+   - [Generalize the Inputs](#generalize-the-inputs)
+   - [Remove Any Extra Print Statements](#remove-and-extra-print-statements)
+   - [Checkpoint 1](#checkpoint-1)
+   - [Future Levels and Checkpoints](#future-levels-and-checkpoints)
+ - [Testing Servers](#testing-servers)
+ - [Automated Testing](#automated-testing)
+ - [Evaluation](#evaluation)
+ - [Submission](#submission)
+
 
 # Overview
 
