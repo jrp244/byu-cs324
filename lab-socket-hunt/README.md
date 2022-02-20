@@ -487,12 +487,12 @@ that the entire treasure has been received (see the
 [specification](#directions-response)).
 
 At this point, print out the message associated with the treasure,
-[as specified](#treasure-standard-output).
+[as specified](#treasure---standard-output).
 
 
 ## Print the Socket Information
 
-Now follow the [specification](#socket-information-standard-error) to produce
+Now follow the [specification](#socket-information---standard-error) to produce
 the output showing the socket information before every *outgoing* communication
 (i.e., calls to `write()`, `send()`, and/or `sendto()`).  The output will be
 rather boring for level 0, but getting the output working for level 0 will
@@ -561,8 +561,8 @@ Then try running it with each of the following seeds:
 While print statements are useful for debugging, at this point remove them,
 comment them out, or otherwise take them out of the code flow (e.g., with `if
 (verbose)`), so your output consists of only the
-[socket information](#socket-information-standard-error)
-and [the treasure](#treasure-standard-output).
+[socket information](#socket-information---standard-error)
+and [the treasure](#treasure---standard-output).
 
 
 ## Checkpoint 1
