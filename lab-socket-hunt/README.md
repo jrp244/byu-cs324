@@ -23,7 +23,7 @@ remote port assignment, IPv4 and IPv6, message parsing, and more.
    - [Collect and Print the Level 0 Treasure](#collect-and-print-the-level-0-treasure)
    - [Print the Socket Information](#print-the-socket-information)
    - [Generalize the Inputs](#generalize-the-inputs)
-   - [Remove Any Extra Print Statements](#remove-and-extra-print-statements)
+   - [Remove Any Extra Print Statements](#remove-any-extra-print-statements)
    - [Checkpoint 1](#checkpoint-1)
    - [Future Levels and Checkpoints](#future-levels-and-checkpoints)
  - [Testing Servers](#testing-servers)
