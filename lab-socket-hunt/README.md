@@ -105,16 +105,19 @@ consistent of fewer than 64 bytes) and will follow this format:
      established local and remote ports), where `m` is specified by the next
      two bytes (`n + 2` and `n + 3`), which is an `unsigned short` in
      network byte order.  While `m` takes up two bytes for consistency with the
-     other op-codes, its value will be only between 1 and 7.
+     other op-codes, its value will be only between 1 and 7.  Each of these
+     datagrams will come from a randomly-selected remote port on the server, so
+     `recvfrom()` must be used by the client to read them to determine which
+     port they came from.
 
-     Each of the `m` datagrams received will be of length 2, and the contents
-     of each will represent an `unsigned short` in network byte order.  The
-     values of included in each of the `m` datagrams should be added together,
-     and their sum is the nonce, whose value (plus 1) should be returned with
-     the next communication to the server.  Note that the sum of these values
-     might well sum to something that exceeds the 16 bits associated with an
-     `unsigned short` (16 bits).  Thus, you will want to store the sum with an
-     `unsigned int` (32 bits).
+     Each of the `m` datagrams received will have 0 length.  However, the
+     contents of the datagrams are not what is important; what is important is
+     the remote ports from which they originated.  The remote ports of the `m`
+     datagrams should be added together, and their sum is the nonce, whose
+     value (plus 1) should be returned with the next communication to the
+     server.  Note that the sum of these values might well sum to something
+     that exceeds the 16 bits associated with an `unsigned short` (16 bits), so
+     you will want to store the sum with an `unsigned int` (32 bits).
    - 4: Switch address families from using IPv4 (`AF_INET`) to IPv6
      (`AF_INET6`) or vice-versa.
  - Bytes `n + 2` - `n + 3`: These bytes, an `unsigned short` in network byte
@@ -125,6 +128,7 @@ consistent of fewer than 64 bytes) and will follow this format:
    order, is the nonce, whose value, plus 1, should be returned in every
    communication back to the server.  In the case of op-code 4, this field is
    ignored.
+
 
 ## Directions Request
 
@@ -246,7 +250,7 @@ arrays of `unsigned char`.
  - Sending every message requires exactly one call to `write()`, `send()`, or
    `sendto()`.
  - Receiving every message requires exactly one call to `read()`, `recv()`, or
-   `recvfrom()`.
+   `recvfrom()`.  In some cases (e.g., op-code 3) `recvfrom()` must be used.
  - Either `connect()` must be used to associate a remote address and port with
    the socket, or `sendto()` must be used when sending messages.
  - `sendto()` can be used to override the remote address and port associated
@@ -282,11 +286,12 @@ arrays of `unsigned char`.
 Your program should have the following usage:
 
 ```
-./treasure_hunter server port seed
+$ ./treasure_hunter server port level seed
 ```
 
  - `server`: the domain name of the server.
  - `port`: the port on which the server is expecting initial communications.
+ - `level`: the level to follow, a value between 0 and 4.
  - `seed`: a seed used to initialize the pseudo-random number generator on the
    server.
 
@@ -315,6 +320,9 @@ end with a null byte, so they can be used with `printf()`.
 
 
 ### Socket Information - standard error
+
+Note: you will find working code examples for this section and others in the
+[sockets homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-sockets).
 
 Every time the client sends a message using `write()` or `send()`, it should
 print the source address, source port, destination address, and destination
@@ -422,7 +430,8 @@ now know how to *format* a message appropriately.
 
 ## Initial Send and Receive
 
-Note: you will find working code examples for this section and others in the [sockets homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-sockets).
+Note: you will find working code examples for this section and others in the
+[sockets homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-sockets).
 
 With your first message created, set up a UDP client socket, with
 `getaddrinfo()`, `socket()`, and `connect()`, specifying `AF_INET` and
@@ -437,7 +446,7 @@ what you are seeing, specifically that you can understand the
 [response](#directions-response).
 
 
-## Find the Level 0 Treasure
+## Collect and Print the Level 0 Treasure
 
 Save the chunk of treasure, and extract the nonce from the
 [response](#directions-response) using the
@@ -456,28 +465,104 @@ At this point, print out the message associated with the treasure,
 [as specified](#treasure-standard-output).
 
 
+## Print the Socket Information
+
+Now follow the [specification](#socket-information-standard-error) to produce
+the output showing the socket information before every *outgoing* communication
+(i.e., calls to `write()`, `send()`, and/or `sendto()`).  The output will be
+rather boring for level 0, but getting the output working for level 0 will
+really help for subsequent levels.
+
+At this point, the output should consist of bunch of lines that look exactly
+the same.  For example:
+
+```
+192.0.2.1:1234 -> 192.0.2.2:32400
+192.0.2.1:1234 -> 192.0.2.2:32400
+192.0.2.1:1234 -> 192.0.2.2:32400
+```
+
+(where 192.0.2.1 is the local IP address and 192.0.2.2 is the remote IP
+address.)
+
+For level 0, the remote port will always be 32400, the remote address will be
+that of the server, the local address will be that of the client, and the
+remote port will be randomly assigned by the kernel--unless you have decided
+to set it explicitly with `bind()` (which is not necessary at this point).
+
+To learn the actual IP addresses of the local and remote systems, to check your
+work, run the following commands:
+
+```bash
+$ dig +short -t A server client
+```
+
+(In each case, replace `client` with the domain name of the client and `server`
+with the domain name of the server.)
+
+To the find the IPv6 addresses (e.g., for level 4), use:
+
+```bash
+$ dig +short -t AAAA server client
+```
+
+
 ## Generalize the Inputs
 
 At this point, the initial directions request has mostly been formed from
 hard-coded values, for a proof of concept.  Now we want to make them more
-general.  If you have hard-coded the server, port, and/or seed, modify your
-code to accept them from the command line.  When you have finished, make sure
-your code works just as well as it did before you began generalizing the code.
+general.  If you have hard-coded the level, server, port, and/or seed (as
+guided earlier), modify your code to accept them from the command line.  When
+you have finished, make sure your code works just as well as it did before you
+began generalizing the code when you run the following:
+
+```bash
+$ ./treasure_hunter server 32400 0 7719
+```
+
+(replace `server` with the domain name of the server you are using.)
+
+Then try running it with each of the following seeds:
+
+ - 33833
+ - 20468
+ - 19789
+ - 59455
+ - 53973
 
 
-## Produce the Socket Information Output
-The final step is to produce the output showing the socket information before
-every outgoing communication,
-[as specified](#socket-information-standard-error).
+## Remove Any Extra Print Statements
+
+While print statements are useful for debugging, at this point remove them,
+comment them out, or otherwise take them out of the code flow (e.g., with `if
+(verbose)`), so your output consists of only the
+[socket information](#socket-information-standard-error)
+and [the treasure](#treasure-standard-output).
 
 
 ## Checkpoint 1
 
+At this point, you should be able to pass level 0.
+
+Now would be a good time to save your work, if you haven't already.
+
+
+## Future Levels and Checkpoints
+
+At this point, work through each of levels 1 through 4 by implementing the
+directions given by [op-codes 1 through 4](#directions-response).  After
+implementing the op-code for each level, you should be able to pass the
+corresponding level.
+
+Use the information from the
+[Socket Setup and Manipulation](#socket-setup-and-manipulation) section,
+as well as code from the
+[sockets homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-sockets) to complete each level.
 
 
 # Testing Servers
 
-The following hostnames and ports correspond to the servers where the games
+The following domain names and ports correspond to the servers where the games
 might be initiated:
 
  - rome.cs.byu.edu:32400
@@ -490,10 +575,12 @@ for the purposes of load balancing, please run the following commands from one
 of the CS lab machines to select the *primary* machine that you should use:
 
 ```bash
-$ hosts=(rome qatar utah redwood)
+$ server=(rome qatar utah redwood)
 $ val=$(( 0x`echo $USER | sha1sum | cut -c4` % 4))
-$ echo ${hosts[$val]}
+$ echo ${server[$val]}
 ```
+
+This effectively selects a server based on your username.
 
 
 # Automated Testing
@@ -506,7 +593,7 @@ A driver will be available soon.
 Your score will be computed out of a maximum of 100 points based on the
 following distribution:
 
- - 20 points for each level; 6 points each for 3 seeds
+TBD
 
 
 # Submission
