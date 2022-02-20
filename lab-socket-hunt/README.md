@@ -287,12 +287,12 @@ arrays of `unsigned char`.
    `send()`, or `sendt()`, `bind()` cannot be called on that socket.
  - If the client is designated to use a new local port, and one is already
    associated with the socket, then the current socket must be closed, and a
-   new one must be created, so that `bind() can be called.
+   new one must be created, so that `bind()` can be called.
  - A socket can be associated with only one address family.  For this lab, it
    will be either `AF_INET` (IPv4) or `AF_INET6` (IPv6).
  - Creating a socket for IPv4 or IPv6 use, requires setting the `ai_family`
    member of the `struct addrinfo` variable passed as the `hints` argument
-   to `getaddrinfo().  For IPv4:
+   to `getaddrinfo()`.  For IPv4:
    ```c
    	hints.ai_family = AF_INET;
    ```
