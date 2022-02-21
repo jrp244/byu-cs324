@@ -63,7 +63,7 @@ have the following format:
    course.
  - Bytes 2 - 5: a `unsigned int` corresponding to the user ID of the user in
    network byte order (i.e., big-endian, most significant bytes first).  This
-   can be retrieved with `id -g` on the CS lab machines:
+   can be retrieved with `id -u` on one of the CS lab machines:
    ```
    $ id -u
    ```
@@ -197,7 +197,7 @@ The level sent to the server is one of the following:
    datagrams, in order to get the nonce.
  - 4: Responses from the server will select from op-codes 1 through 4 at
    random.  That is, the client should be expected to do everything it did at
-   level 3, but also to switch to IPv4 or IPv6, from whichever it was using 
+   level 3, but also to switch to IPv4 or IPv6, from whichever it was using
    before.
 
 
@@ -270,26 +270,39 @@ arrays of `unsigned char`.
 
 ## Socket Setup and Manipulation
 
- - All communications between client and server are over UDP, so all sockets
-   are of type `SOCK_DGRAM`.
+For this lab, all communications between client and server are over UDP (type
+`SOCK_DGRAM`).  As such, the following are tips for socket creation and
+manipulation:
+
  - Sending every message requires exactly one call to `write()`, `send()`, or
-   `sendto()`.
+   `sendto()`.  See the man page for `udp`.
  - Receiving every message requires exactly one call to `read()`, `recv()`, or
-   `recvfrom()`.  In some cases (e.g., op-code 3) `recvfrom()` must be used.
+   `recvfrom()`.  In some cases (e.g., op-code 3) `recvfrom()` *must* be used.
+   See the man page for `udp`.
+ - With a _TCP_ socket (i.e., `SOCK_STREAM`), when `read()` (or `recv()`)
+   returns 0, that is a signal that `close()` has been called on the remote
+   socket, and the connection has been shut down.  However, with a _UDP_ socket,
+   the same is *not true*--because there is no connection.  Instead, when 0 is
+   returned, it simply means that there was no data/payload in the datagram
+   (i.e., an "empty envelope").  See "RETURN VALUE" in the `recv()` man page.
  - Either `connect()` must be used to associate a remote address and port with
    the socket, or `sendto()` must be used when sending messages.
  - `sendto()` can be used to override the remote address and port associated
-   with the socket.
+   with the socket.  See the man page for `udp`.
  - The local address and port can be associated with a socket using `bind()`.
- - `bind()` can only be called once on a socket.
+   See the man pages for `udp` and `bind()`.
+ - `bind()` can only be called *once* on a socket.  See the man page for
+   `bind()`.
  - Even if `bind()` has *not* been called on a socket, if a local address and
-   port have been associated with the socket implicitly by calling `write()`,
-   `send()`, or `sendt()`, `bind()` cannot be called on that socket.
+   port have been associated with the socket implicitly (i.e., when `write()`,
+   `send()`, or `sendto()` is called on that socket), `bind()` cannot be called
+   on that socket.
  - If the client is designated to use a new local port, and one is already
    associated with the socket, then the current socket must be closed, and a
    new one must be created, so that `bind()` can be called.
  - A socket can be associated with only one address family.  For this lab, it
-   will be either `AF_INET` (IPv4) or `AF_INET6` (IPv6).
+   will be either `AF_INET` (IPv4) or `AF_INET6` (IPv6).  See the man page for
+   `socket()`.
  - Creating a socket for IPv4 or IPv6 use, requires setting the `ai_family`
    member of the `struct addrinfo` variable passed as the `hints` argument
    to `getaddrinfo()`.  For IPv4:
@@ -300,6 +313,7 @@ arrays of `unsigned char`.
    ```c
    	hints.ai_family = AF_INET6;
    ```
+   See the man page for `getaddrinfo()`.
  - If the client is designated to use a different address family, then the
    current socket must be closed, and a new one must be created using the new
    address family.
@@ -565,7 +579,7 @@ comment them out, or otherwise take them out of the code flow (e.g., with `if
 and [the treasure](#treasure---standard-output).
 
 
-## Checkpoint 1
+## Checkpoint 0
 
 At this point, you should be able to pass level 0.
 
@@ -574,7 +588,8 @@ Now would be a good time to save your work, if you haven't already.
 
 ## Future Levels and Checkpoints
 
-At this point, work through each of levels 1 through 4 by implementing the
+At this point, work through each of
+[levels 1 through 4](#levels) by implementing the
 directions given by [op-codes 1 through 4](#directions-response).  After
 implementing the op-code for each level, you should be able to pass the
 corresponding level.
@@ -583,6 +598,8 @@ Use the information from the
 [Socket Setup and Manipulation](#socket-setup-and-manipulation) section,
 as well as code from the
 [sockets homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-sockets) to complete each level.
+
+Consider the completion of each level a checkpoint.
 
 
 # Testing Servers
