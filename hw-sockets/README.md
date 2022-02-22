@@ -415,7 +415,7 @@ $ ./client -4 hostname port foo bar abc123
      _before_ the server called `recvfrom()` the second time?*
  19. *How many total calls to `recvfrom()` were required for the server process
      to read all the messages/bytes that were sent?*
- 20. *How and why does the answer to #18 differ from that from #9?*
+ 20. *How and why does the answer to #19 differ from that from #9?*
      Hint: see the man page for `tcp`, specifically within the first paragraph
      of the "DESCRIPTION" section.
 
