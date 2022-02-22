@@ -234,7 +234,7 @@ the number of `recvfrom()` calls on the server.  Let's make some modifications
 to both client and server code to better understand what is going on:
 
  - Modify `server.c`:
-   - sleeps for 2 seconds immediately after calling `recvfrom()` on the socket.
+   - sleep for 2 seconds immediately after calling `recvfrom()` on the socket.
    - remove the `printf()` statements that you added earlier around the
      `recvfrom()` statement.
  - Modify `client.c` such that it does not attempt to read from the
