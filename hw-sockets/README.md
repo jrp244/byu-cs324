@@ -74,7 +74,7 @@ fputs(buf, stdout);
 write(1, buf, 3);
 ```
 
-`fputs()` stops at index 2 (value 'c'`) because of the null value at index 3,
+`fputs()` stops at index 2 (value `'c'`) because of the null value at index 3,
 whereas `write()` could care less about the character with null value.  In
 fact, `write()` will continue writing characters from the start of `buf`, for
 as long you designate.  For example:
