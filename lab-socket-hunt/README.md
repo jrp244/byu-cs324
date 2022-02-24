@@ -644,7 +644,12 @@ A driver will be available soon.
 Your score will be computed out of a maximum of 100 points based on the
 following distribution:
 
-TBD
+ - 20 points for each of 5 levels (0 through 4)
+ - For each level, 5 points for each seed:
+   - 7719
+   - 33833
+   - 20468
+   - 19789
 
 
 # Submission
