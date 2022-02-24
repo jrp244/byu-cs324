@@ -257,8 +257,8 @@ network communications, which expect integers to be in *network* byte order
 (i.e., *big endian*).  To remedy this, there are functions provided for you by
 the system, including `htons()` and `ntohs()` ("host to network short" and
 "network to host short").  See their man pages for more information.  Try
-wrapping modifying the code above to assign `htons(0xabcd)` to `val` instead,
-and see how the output changes.
+modifying the code above to assign `htons(0xabcd)` to `val` instead, and see
+how the output changes.
 
 The example above is specific to storing an `unsigned short` integer value into
 an arbitrary memory location (in this case an array of `unsigned char`) in
