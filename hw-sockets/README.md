@@ -461,7 +461,7 @@ Now test your client program by running the following in the top-right "local"
 pane:
 
 ```bash
-$ ./client < alpha.txt
+$ ./client -4 hostname port < alpha.txt
 ```
 
 Because the open file descriptor associated with `alpha.txt` will be duplicated
@@ -478,7 +478,7 @@ $ nc -l port | sha1sum
 Then re-run the client program:
 
 ```bash
-$ ./client < alpha.txt
+$ ./client -4 hostname port < alpha.txt
 ```
 
  21. *What is the output of `sha1sum`?*
