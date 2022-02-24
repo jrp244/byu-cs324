@@ -21,7 +21,7 @@ remote port assignment, IPv4 and IPv6, message parsing, and more.
    - [Getting Started](#getting-started)
    - [Initial Send and Receive](#initial-send-and-receive)
    - [Collect and Print the Level 0 Treasure](#collect-and-print-the-level-0-treasure)
-   - [Print the Socket Information](#print-the-socket-information)
+   - [Print the Socket Information (Optional)](#print-the-socket-information-optional)
    - [Generalize the Inputs](#generalize-the-inputs)
    - [Remove Any Extra Print Statements](#remove-any-extra-print-statements)
    - [Checkpoint 1](#checkpoint-1)
@@ -358,7 +358,9 @@ buffer size.  Remember to ensure that the characters comprising your treasure
 end with a null byte, so they can be used with `printf()`.
 
 
-### Socket Information - standard error
+### Socket Information - standard error (optional)
+
+This output is _optional_ but might be helpful and/or interesting to you.
 
 Note: you will find working code examples for this section and others in the
 [sockets homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-sockets).
@@ -387,6 +389,11 @@ functions useful for this.  While `getnameinfo()` *can* convert an IP address
 to a domain name (using the DNS), in this case, you will be using it to simply
 format the IP address and port properly as strings, so you can print them out.
 Thus, the `NI_NUMERICSERV` and `NI_NUMERICHOST` options will be useful.
+
+Note: using `getpeername()` only makes sense if the remote address and port
+have been explicitly set with `connect()`.  In the case that your code does
+*not* use `connect()`, you can pass the same `struct sockaddr_storage`
+structure to `getnameinfo()` as you did to `sendto()`.
 
 
 # Preparation
@@ -504,7 +511,10 @@ At this point, print out the message associated with the treasure,
 [as specified](#treasure---standard-output).
 
 
-## Print the Socket Information
+## Print the Socket Information (Optional)
+
+This section is _optional_.  It might be helpful or interesting for you to see
+where packets are being sent.
 
 Now follow the [specification](#socket-information---standard-error) to produce
 the output showing the socket information before every *outgoing* communication
@@ -561,13 +571,12 @@ $ ./treasure_hunter server 32400 0 7719
 
 (replace `server` with the domain name of the server you are using.)
 
-Then try running it with each of the following seeds:
+Try running it with each of the following seeds:
 
+ - 7719 (same as before)
  - 33833
  - 20468
  - 19789
- - 59455
- - 53973
 
 
 ## Remove Any Extra Print Statements
