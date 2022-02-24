@@ -412,8 +412,8 @@ $ ./client -4 hostname port foo bar abc123
  17. *How many total calls to `send()` / `write()` were made by the client?*
      Refer to `client.c`.
  18. *How many messages were received by the kernel of the server-side process
-     _before_ the server called `recvfrom()` the second time?*
- 19. *How many total calls to `recvfrom()` were required for the server process
+     _before_ the server called `recv()` the second time?*
+ 19. *How many total calls to `recv()` were required for the server process
      to read all the messages/bytes that were sent?*
  20. *How and why does the answer to #19 differ from that from #9?*
      Hint: see the man page for `tcp`, specifically within the first paragraph
@@ -449,8 +449,7 @@ the socket connection is established:
    accordingly.
 
 In the top-left "remote" pane, start a netcat (`nc` command) server listening
-for incoming TCP connections on a port of your choosing, and such that its
-output is piped to the `sha1sum` command:
+for incoming TCP connections on a port of your choosing:
 
 ```bash
 $ nc -l port
