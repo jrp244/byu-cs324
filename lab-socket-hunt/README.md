@@ -24,7 +24,7 @@ remote port assignment, IPv4 and IPv6, message parsing, and more.
    - [Print the Socket Information (Optional)](#print-the-socket-information-optional)
    - [Generalize the Inputs](#generalize-the-inputs)
    - [Remove Any Extra Print Statements](#remove-any-extra-print-statements)
-   - [Checkpoint 1](#checkpoint-1)
+   - [Checkpoint 0](#checkpoint-0)
    - [Future Levels and Checkpoints](#future-levels-and-checkpoints)
  - [Testing Servers](#testing-servers)
  - [Automated Testing](#automated-testing)
@@ -590,7 +590,8 @@ and [the treasure](#treasure---standard-output).
 
 ## Checkpoint 0
 
-At this point, you should be able to pass level 0.
+At this point, you can also test your work with
+[automated testing](#automated-testing).  Level 0 should work at this point.
 
 Now would be a good time to save your work, if you haven't already.
 
@@ -601,7 +602,7 @@ At this point, work through each of
 [levels 1 through 4](#levels) by implementing the
 directions given by [op-codes 1 through 4](#directions-response).  After
 implementing the op-code for each level, you should be able to pass the
-corresponding level.
+corresponding level with both manual and [automated testing](#automated-testing).
 
 Use the information from the
 [Socket Setup and Manipulation](#socket-setup-and-manipulation) section,
