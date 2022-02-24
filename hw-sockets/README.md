@@ -257,7 +257,8 @@ before.
  7. *How many total calls to `send()` / `write()` were made by the client?*
     Refer to `client.c`.
  8. *How many messages were received by the kernel of the server-side process
-    _before_ the server called `recvfrom()` the second time?*
+    _before_ the server called `recvfrom()` the second time (i.e., _between_
+    the server's first and seconds calls to `recvfrom()`)?
  9. *How many total calls to `recvfrom()` were required for the server process
     to read all the messages/bytes that were sent?*
  10. *Why didn't the server read all the messages that were ready with a single
@@ -412,7 +413,8 @@ $ ./client -4 hostname port foo bar abc123
  17. *How many total calls to `send()` / `write()` were made by the client?*
      Refer to `client.c`.
  18. *How many messages were received by the kernel of the server-side process
-     _before_ the server called `recv()` the second time?*
+     _before_ the server called `recv()` the second time (i.e., _between_ the
+     server's first and seconds calls to `recv()`)?*
  19. *How many total calls to `recv()` were required for the server process
      to read all the messages/bytes that were sent?*
  20. *How and why does the answer to #19 differ from that from #9?*
