@@ -636,7 +636,21 @@ This effectively selects a server based on your username.
 
 # Automated Testing
 
-A driver will be available soon.
+For your convenience, a script is also provided for automated testing.  This is
+not a replacement for manual testing but can be used as a sanity check.  You
+can use it by simply running the following:
+
+```
+./driver.py server port [level]
+```
+
+Replace `server` and `port` with a server and port from the set of
+[servers designated for testing](#testing-servers) (i.e., preferably the one
+corresponding to your username).
+
+Specifying `level` is optional.  If specified, then it will test
+[all seeds](#evaluation) against a given level.  If not specified, it will test
+_all_ levels.
 
 
 # Evaluation
@@ -645,11 +659,12 @@ Your score will be computed out of a maximum of 100 points based on the
 following distribution:
 
  - 20 points for each of 5 levels (0 through 4)
- - For each level, 5 points for each seed:
+ - For each level, 4 points for each seed:
    - 7719
    - 33833
    - 20468
    - 19789
+   - 59455
 
 
 # Submission
