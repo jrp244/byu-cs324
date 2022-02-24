@@ -43,7 +43,7 @@ both communication types.
 
  6. You will be doing a writeup on this assignment. Call your writeup
     `sockets.txt`. Make sure you answer any questions/provide outputs as
-    stated in the *bolded* questions/statements (there should be XX in all).
+    stated in the *bolded* questions/statements (there should be 28 in all).
 
 
 ## Strings and Bytes
