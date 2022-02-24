@@ -535,8 +535,8 @@ Note that after you have run your program, `bestill.txt` should contain:
  - all three verses to a hymn.
 
 
- 22. *Show the command pipeline that you used to run your client program and
-     issue the request.*
+ 22. *Show the command that you used to run your client program and
+     issue the request, including input and output redirection.*
 
  23. *Show the output to the following:*
      ```bash
