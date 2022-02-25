@@ -568,6 +568,8 @@ program (e.g., a Web browser) to check its correctness.
      $ sha1sum socket.jpg
      ```
 
+     Hint: it should start with `c03ce59...`
+
 
 ## Part 4: Review Questions
 
