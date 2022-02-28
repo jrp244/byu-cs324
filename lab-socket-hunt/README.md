@@ -424,10 +424,6 @@ without the help of `getaddrinfo()`.
 	if (bind(sfd, (struct sockaddr *)&ipv4addr, sizeof(struct sockaddr_in)) < 0) {
 		perror("bind()");
 	}
-	// OR
-	if (connect(sfd, (struct sockaddr *)&ipv4addr, sizeof(struct sockaddr_in)) < 0) {
-		perror("connect()");
-	}
 ```
 Note that both `bind()` and `connect()` take type `struct sockaddr *` as the
 second argument, allowing it to accept either `struct sockaddr_in` or
@@ -460,10 +456,6 @@ The same for IPv6:
 	if (bind(sfd, (struct sockaddr *)&ipv6addr, sizeof(struct sockaddr_in6)) < 0) {
 		perror("bind()");
 	}
-	// OR
-	if (connect(sfd, (struct sockaddr *)&ipv6addr, sizeof(struct sockaddr_in6)) < 0) {
-		perror("connect()");
-	}
 ```
 
 Because local and remote addresses and ports are stored in a
@@ -485,7 +477,26 @@ this:
 
 ```c
 	af = rp->ai_family;
-	ipv4addr = *(struct sockaddr_in *)rp->ai_addr;
+	ipv6addr_remote = *(struct sockaddr_in *)rp->ai_addr;
+```
+or:
+```c
+	af = rp->ai_family;
+	ipv6addr_remote = *(struct sockaddr_in6 *)rp->ai_addr;
+```
+
+So you can later run something like this:
+
+```c
+	if (connect(sfd, (struct sockaddr *)&ipv4addr, sizeof(struct sockaddr_in)) < 0) {
+		perror("connect()");
+	}
+```
+or:
+```c
+	if (connect(sfd, (struct sockaddr *)&ipv6addr, sizeof(struct sockaddr_in6)) < 0) {
+		perror("connect()");
+	}
 ```
 
 
