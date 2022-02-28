@@ -288,7 +288,8 @@ an arbitrary memory location (in this case an array of `unsigned char`) in
 network byte order.  You will need to use this principle to figure out how to
 do similar conversions for other cirumstances, including working with integers
 other than `unsigned short` and extracting integers of various lengths from
-arrays of `unsigned char`.
+arrays of `unsigned char`.  Hint: the man page for `ntohs()` for related
+functions.
 
 
 ## Socket Setup and Manipulation
