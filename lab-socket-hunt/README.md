@@ -441,7 +441,7 @@ port in *network* byte ordering
 (See [Message Formatting](#message-formatting)).
 
 The same for IPv6:
-```
+```c
 	struct sockaddr_in6 ipv6addr;
 
 	int sfd;
