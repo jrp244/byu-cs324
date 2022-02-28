@@ -367,7 +367,8 @@ The following are useful tips related to address families:
 ### Address Structures
 
 The data structures used for holding local or remote address and port
-information are defined as follows.
+information are defined as follows (see the man pages for `ip(7)` and
+`ipv6(7)`, respectively.
 
 For IPv4 (`AF_INET`):
 ```c
