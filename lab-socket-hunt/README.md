@@ -120,12 +120,23 @@ consistent of fewer than 64 bytes) and will follow this format:
      directed *to* this port (i.e., the *destination*) port), and future
      communications *from* the server will come *from* this port (i.e., the
      *source* port).
+
+     Here you may either use `connect()` or simply update the remote port you
+     you are sending to with `sendto()`.  You *may* use `getaddrinfo()`, but
+     you *should not* create a new socket (i.e., with `socket()`), only update
+     the existing one.  See
+     [Socket Setup and Manipulation](#socket-setup-and-manipulation)).
    - 2: Bind (i.e., using `bind()`) to the local port specified by the next two
      bytes (`n + 2` and `n + 3`), which is an `unsigned short` in network
      byte order.  The result is that future communications *to* the server will
      come *from* this port (i.e., the *source* port), and future
      communications *from* the server will be directed *to* that port (i.e.,
      the *destination* port).
+
+     Here you *must* create a new socket with `socket()`.  You *may* use
+     `getaddrinfo()`, but it is not required.  Make sure you close the old
+     socket!  See
+     [Socket Setup and Manipulation](#socket-setup-and-manipulation)).
    - 3: Read `m` datagrams from the socket (i.e., using the currently
      established local and remote ports), where `m` is specified by the next
      two bytes (`n + 2` and `n + 3`), which is an `unsigned short` in
@@ -145,6 +156,18 @@ consistent of fewer than 64 bytes) and will follow this format:
      you will want to store the sum with an `unsigned int` (32 bits).
    - 4: Switch address families from using IPv4 (`AF_INET`) to IPv6
      (`AF_INET6`) or vice-versa.
+
+     Here you *must* call `getaddrinfo()`, and you *must* create a new socket
+     with `socket()`.  That is because a socket is only associated with a given
+     address family.
+     [Socket Setup and Manipulation](#socket-setup-and-manipulation)).
+
+     Note that switching address families for a socket will slightly affect the
+     code you created to handle the other op-codes.  That is because the data
+     structure you are using to hold IP addresses for `connect()`, `bind()`,
+     and `recvfrom()` is different for each address family (`sockaddr_in` vs
+     `struct sockaddr_in6`) because the address length for each family is
+     unique--4 bytes vs. 16 bytes, respectively.
  - Bytes `n + 2` - `n + 3`: These bytes, an `unsigned short` in network byte
    order is the parameter used in conjunction with the op-code.  This is
    included in all messages, for consistency, but it is only used for op-codes
@@ -270,6 +293,9 @@ arrays of `unsigned char`.
 
 ## Socket Setup and Manipulation
 
+
+### UDP Socket Behaviors
+
 For this lab, all communications between client and server are over UDP (type
 `SOCK_DGRAM`).  As such, the following are tips for socket creation and
 manipulation:
@@ -279,33 +305,53 @@ manipulation:
  - Receiving every message requires exactly one call to `read()`, `recv()`, or
    `recvfrom()`.  In some cases (e.g., op-code 3) `recvfrom()` *must* be used.
    See the man page for `udp`.
- - With a _TCP_ socket (i.e., `SOCK_STREAM`), when `read()` (or `recv()`)
-   returns 0, that is a signal that `close()` has been called on the remote
-   socket, and the connection has been shut down.  However, with a _UDP_ socket,
-   the same is *not true*--because there is no connection.  Instead, when 0 is
-   returned, it simply means that there was no data/payload in the datagram
-   (i.e., an "empty envelope").  See "RETURN VALUE" in the `recv()` man page.
+ - When 0 is returned by a call to `read()` or `recv()` on a socket of type
+   `SOCK_DGRAM`, it simply means that there was no data/payload in the datagram
+   (i.e., it was an "empty envelope").  See "RETURN VALUE" in the `recv()` man
+   page.
+
+   Note that this is different than the behavior associated with a socket of
+   type `SOCK_STREAM`, in which if `read()` or `recv()` returns 0, it is a
+   signal that `close()` has been called on the remote socket, and the
+   connection has been shut down.  With UDP (type `SOCK_DGRAM`), there is no
+   connection to be shutdown.
  - Either `connect()` must be used to associate a remote address and port with
    the socket, or `sendto()` must be used when sending messages.
  - `sendto()` can be used to override the remote address and port associated
    with the socket.  See the man page for `udp`.
+
+
+### Using `bind()` with Sockets
+
+The following tips associated with `bind()` are not specific to UDP sockets
+(type `SOCK_DGRAM`) but are nonetheless useful for this lab:
+
  - The local address and port can be associated with a socket using `bind()`.
    See the man pages for `udp` and `bind()`.
  - `bind()` can only be called *once* on a socket.  See the man page for
    `bind()`.
- - Even if `bind()` has *not* been called on a socket, if a local address and
+ - If the client is told to use a new local port, then the current socket must
+   be closed, and a new one must be created, so that `bind()` can be called.
+
+   Even if `bind()` has *not* been called on a socket, if a local address and
    port have been associated with the socket implicitly (i.e., when `write()`,
    `send()`, or `sendto()` is called on that socket), `bind()` cannot be called
    on that socket.
- - If the client is designated to use a new local port, and one is already
-   associated with the socket, then the current socket must be closed, and a
-   new one must be created, so that `bind()` can be called.
- - A socket can be associated with only one address family.  For this lab, it
+
+
+### Using Different Address Families with Sockets
+
+The following are useful tips related to address families:
+
+ - If the client is told to use a new address family, then the current socket
+   must be closed, and a new one must be created with the new address family.
+
+   A socket can be associated with only one address family.  For this lab, it
    will be either `AF_INET` (IPv4) or `AF_INET6` (IPv6).  See the man page for
    `socket()`.
- - Creating a socket for IPv4 or IPv6 use, requires setting the `ai_family`
-   member of the `struct addrinfo` variable passed as the `hints` argument
-   to `getaddrinfo()`.  For IPv4:
+ - When using `getaddrinfo()` to create your socket a socket for IPv4 or IPv6
+   use, use the `ai_family` member of the `struct addrinfo` variable passed as
+   the `hints` argument to `getaddrinfo()`.  For IPv4:
    ```c
    	hints.ai_family = AF_INET;
    ```
@@ -314,10 +360,133 @@ manipulation:
    	hints.ai_family = AF_INET6;
    ```
    See the man page for `getaddrinfo()`.
- - If the client is designated to use a different address family, then the
-   current socket must be closed, and a new one must be created using the new
-   address family.
  - The initial communication from the client *must* be over IPv4.
+
+
+### Address Structures
+
+The data structures used for holding local or remote address and port
+information are defined as follows.
+
+For IPv4 (`AF_INET`):
+```c
+           struct sockaddr_in {
+               sa_family_t    sin_family; /* address family: AF_INET */
+               in_port_t      sin_port;   /* port in network byte order */
+               struct in_addr sin_addr;   /* internet address */
+           };
+
+           /* Internet address. */
+           struct in_addr {
+               uint32_t       s_addr;     /* address in network byte order */
+           };
+```
+
+For IPv6 (`AF_INET6`):
+```c
+           struct sockaddr_in6 {
+               sa_family_t     sin6_family;   /* AF_INET6 */
+               in_port_t       sin6_port;     /* port number */
+               uint32_t        sin6_flowinfo; /* IPv6 flow information */
+               struct in6_addr sin6_addr;     /* IPv6 address */
+               uint32_t        sin6_scope_id; /* Scope ID (new in 2.4) */
+           };
+
+           struct in6_addr {
+               unsigned char   s6_addr[16];   /* IPv6 address */
+           };
+```
+
+When using `getaddrinfo()` most of this is masked for you, and you can simply
+create a socket and call `bind()` or `connect()` on it with the members of the
+structures (`struct addrinfo`) that comprise the links in the linked list
+created by `getaddrinfo()`.  However, in some cases `getaddrinfo()` is more
+than is needed.
+
+Here are some examples of populating and using those data structures manually,
+without the help of `getaddrinfo()`.
+
+```c
+	struct sockaddr_in ipv4addr;
+
+	int sfd;
+	unsigned short port;
+
+	if ((sfd = socket(AF_INET, SOCK_DGRAM, 0)) < -1) {
+		perror("socket()");
+	}
+	...
+
+	ipv4addr.sin_family = AF_INET; // use AF_INET (IPv4)
+	ipv4addr.sin_port = htons(port); // specific port
+	ipv4addr.sin_addr.s_addr = 0; // any/all local addresses
+
+	if (bind(sfd, (struct sockaddr *)&ipv4addr, sizeof(struct sockaddr_in)) < 0) {
+		perror("bind()");
+	}
+	// OR
+	if (connect(sfd, (struct sockaddr *)&ipv4addr, sizeof(struct sockaddr_in)) < 0) {
+		perror("connect()");
+	}
+```
+Note that both `bind()` and `connect()` take type `struct sockaddr *` as the
+second argument, allowing it to accept either `struct sockaddr_in` or
+`struct sockaddr_in6`, with the caveats that 1) the argument is *cast* as a
+`struct sockaddr *` and 2) the length is specified as the last argument, since
+the lengths of the two structures are different, and `bind()` would not
+otherwise know the difference.  `sendto()` behaviors similarly.
+
+Also note that the `sin_port` of the `struct sockaddr_in` member contains the
+port in *network* byte ordering
+(See [Message Formatting](#message-formatting)).
+
+The same for IPv6:
+```
+	struct sockaddr_in6 ipv6addr;
+
+	int sfd;
+	unsigned short port;
+
+	if ((sfd = socket(AF_INET6, SOCK_DGRAM, 0)) < -1) {
+		perror("socket()");
+	}
+
+	...
+
+	ipv6addr.sin6_family = AF_INET6; // IPv6 (AF_INET6)
+	ipv6addr.sin6_port = htons(port); // specific port
+	bzero(ipv6addr.sin6_addr.s6_addr, 16); // any/all local addresses
+
+	if (bind(sfd, (struct sockaddr *)&ipv6addr, sizeof(struct sockaddr_in6)) < 0) {
+		perror("bind()");
+	}
+	// OR
+	if (connect(sfd, (struct sockaddr *)&ipv6addr, sizeof(struct sockaddr_in6)) < 0) {
+		perror("connect()");
+	}
+```
+
+Because local and remote addresses and ports are stored in a
+`struct sockaddr_in` or `struct sockaddr_in6`, one way that you might keep
+always track of your address family, as well as local and remote ports, is by
+declaring the following:
+
+```c
+	int af;
+	struct sockaddr_in ipv4addr_local;
+	struct sockaddr_in ipv4addr_remote;
+	struct sockaddr_in6 ipv6addr_local;
+	struct sockaddr_in6 ipv6addr_remote;
+```
+
+and maintaining them along the way.  You can initialize your `struct
+sockaddr_in` with the value returned from `getaddrinfo()` using something like
+this:
+
+```c
+	af = rp->ai_family;
+	ipv4addr = *(struct sockaddr_in *)rp->ai_addr;
+```
 
 
 ## Usage
@@ -358,9 +527,10 @@ buffer size.  Remember to ensure that the characters comprising your treasure
 end with a null byte, so they can be used with `printf()`.
 
 
-### Socket Information - standard error (optional)
+### Socket Information - standard error (Extra Credit)
 
-This output is _optional_ but might be helpful and/or interesting to you.
+This output is _optional_ but might be helpful and/or interesting to you.  You
+will also get extra credit.
 
 Note: you will find working code examples for this section and others in the
 [sockets homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-sockets).
@@ -403,6 +573,8 @@ structure to `getnameinfo()` as you did to `sendto()`.
 Read the following in preparation for this assignment:
   - The man pages for the following:
     - `udp`
+    - `ip`
+    - `ipv6`
     - `socket`
     - `socket()`
     - `send()`
@@ -577,6 +749,7 @@ Try running it with each of the following seeds:
  - 33833
  - 20468
  - 19789
+ - 59455
 
 
 ## Remove Any Extra Print Statements
@@ -607,9 +780,15 @@ corresponding level with both manual and [automated testing](#automated-testing)
 Use the information from the
 [Socket Setup and Manipulation](#socket-setup-and-manipulation) section,
 as well as code from the
-[sockets homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-sockets) to complete each level.
+[sockets homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-sockets)
+to complete each level.
 
 Consider the completion of each level a checkpoint.
+
+Note that when you implement level 4, you will need to make sure that your code
+for the previous levels supports both IPv4 (`AF_INET` and IPv6 `AF_INET6`).
+See the
+[Socket Setup and Manipulation](#socket-setup-and-manipulation) section.
 
 
 # Testing Servers
