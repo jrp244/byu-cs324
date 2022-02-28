@@ -477,7 +477,7 @@ this:
 
 ```c
 	af = rp->ai_family;
-	ipv6addr_remote = *(struct sockaddr_in *)rp->ai_addr;
+	ipv4addr_remote = *(struct sockaddr_in *)rp->ai_addr;
 ```
 or:
 ```c
