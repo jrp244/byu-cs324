@@ -146,7 +146,7 @@ consistent of fewer than 64 bytes) and will follow this format:
      `recvfrom()` must be used by the client to read them to determine which
      port they came from.
 
-     Note: if you have called `connect()` on your `socket()` (as opposed to
+     Note: if you have called `connect()` on your socket (as opposed to
      using `sendto()`), you *must* create a new socket with `socket()` and
      `bind()` to the local port that was previously used.  You *may* use
      `getaddrinfo()`, but it is not required.  Make sure you close
