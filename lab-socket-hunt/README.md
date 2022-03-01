@@ -146,6 +146,13 @@ consistent of fewer than 64 bytes) and will follow this format:
      `recvfrom()` must be used by the client to read them to determine which
      port they came from.
 
+     Note: if you have called `connect()` on your `socket()` (as opposed to
+     using `sendto()`), you *must* create a new socket with `socket()` and
+     `bind()` to the local port that was previously used.  You *may* use
+     `getaddrinfo()`, but it is not required.  Make sure you close
+     the old socket!  See
+     [Socket Setup and Manipulation](#socket-setup-and-manipulation)).
+
      Each of the `m` datagrams received will have 0 length.  However, the
      contents of the datagrams are not what is important; what is important is
      the remote ports from which they originated.  The remote ports of the `m`
