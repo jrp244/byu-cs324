@@ -672,13 +672,13 @@ Note: you will find working code examples for this section and others in the
 [sockets homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-sockets).
 
 With your first message created, set up a UDP client socket, with
-`getaddrinfo()`, `socket()`, and `connect()`, specifying `AF_INET` and
-`SOCK_DGRAM`
+`getaddrinfo()`, `socket()`, and (optionally) `connect()`, specifying
+`AF_INET` and `SOCK_DGRAM`
 (see [Socket Setup and Manipulation](#socket-setup-and-manipulation)), and
 using one of the [testing servers](#testing-servers) as the remote server.
 
-When everything is set up, send your message with `send()`, and read the
-response with `recv()` (remember, it is just one call to each!).  Use
+When everything is set up, send your message with `send()` (or `sendto()`, and
+read the response with `recv()` (remember, it is just one call to each!).  Use
 `print_bytes()` to print out the message contents.  Make sure you understand
 what you are seeing, specifically that you can understand the
 [response](#directions-response).
