@@ -162,7 +162,11 @@ consistent of fewer than 64 bytes) and will follow this format:
      that exceeds the 16 bits associated with an `unsigned short` (16 bits), so
      you will want to store the sum with an `unsigned int` (32 bits).
    - 4: Switch address families from using IPv4 (`AF_INET`) to IPv6
-     (`AF_INET6`) or vice-versa.
+     (`AF_INET6`) or vice-versa, and use the port specified by the next two
+     bytes (`n + 2` and `n + 3`), which is an `unsigned short` in network byte
+     order, as the new remote port (i.e., like op-code 1).  Future
+     communications to and from the server will now use the new address family
+     and the new remote port.
 
      Here you *must* call `getaddrinfo()`, and you *must* create a new socket
      with `socket()`.  That is because a socket is only associated with a given
@@ -178,10 +182,10 @@ consistent of fewer than 64 bytes) and will follow this format:
  - Bytes `n + 2` - `n + 3`: These bytes, an `unsigned short` in network byte
    order is the parameter used in conjunction with the op-code.  This is
    included in all messages, for consistency, but it is only used for op-codes
-   1 through 3; for op-codes 0 and 4, it exists but can be ignored.
+   1 through 4; for op-code 0, it exists but can be ignored.
  - Bytes `n + 4` - `n + 7`: These bytes, an `unsigned int` in network byte
    order, is the nonce, whose value, plus 1, should be returned in every
-   communication back to the server.  In the case of op-code 4, this field is
+   communication back to the server.  In the case of op-code 3, this field is
    ignored.
 
 
