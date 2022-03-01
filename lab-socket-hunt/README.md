@@ -135,7 +135,7 @@ consistent of fewer than 64 bytes) and will follow this format:
 
      Here you *must* create a new socket with `socket()`.  You *may* use
      `getaddrinfo()`, but it is not required.  Make sure you close the old
-     socket!  See
+     socket!  (See
      [Socket Setup and Manipulation](#socket-setup-and-manipulation)).
    - 3: Read `m` datagrams from the socket (i.e., using the currently
      established local and remote ports), where `m` is specified by the next
@@ -146,13 +146,6 @@ consistent of fewer than 64 bytes) and will follow this format:
      `recvfrom()` must be used by the client to read them to determine which
      port they came from.
 
-     Note: if you have called `connect()` on your socket (as opposed to
-     using `sendto()`), you *must* create a new socket with `socket()` and
-     `bind()` to the local port that was previously used.  You *may* use
-     `getaddrinfo()`, but it is not required.  Make sure you close
-     the old socket!  See
-     [Socket Setup and Manipulation](#socket-setup-and-manipulation)).
-
      Each of the `m` datagrams received will have 0 length.  However, the
      contents of the datagrams are not what is important; what is important is
      the remote ports from which they originated.  The remote ports of the `m`
@@ -161,6 +154,28 @@ consistent of fewer than 64 bytes) and will follow this format:
      server.  Note that the sum of these values might well sum to something
      that exceeds the 16 bits associated with an `unsigned short` (16 bits), so
      you will want to store the sum with an `unsigned int` (32 bits).
+
+     Note: if you have called `connect()` on your socket (as opposed to
+     using `sendto()`), you *must* create a new socket with `socket()` and
+     `bind()` to the local port that was previously used.  You *may* use
+     `getaddrinfo()`, but it is not required.  In this case (`connect()`), your
+     code will look something like this:
+
+     - Call `close()` on the old socket (this must be done first, or you will
+       not be able to successfully bind to the same local port with the new
+       socket).
+     - Create the new socket.
+     - Bind the new socket to the local port that was used previously.
+     - Call `recvfrom()` `m` times.
+     - Compute the nonce by adding the remote ports from which the `m`
+       datagrams were received.
+     - Call `connect()` on the new socket to set the remote address and port,
+       for future communications.
+     - Send the directions request with the nonce value + 1.
+
+     (See [Socket Setup and Manipulation](#socket-setup-and-manipulation) for
+     more).
+
    - 4: Switch address families from using IPv4 (`AF_INET`) to IPv6
      (`AF_INET6`) or vice-versa, and use the port specified by the next two
      bytes (`n + 2` and `n + 3`), which is an `unsigned short` in network byte
