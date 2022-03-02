@@ -21,7 +21,7 @@ remote port assignment, IPv4 and IPv6, message parsing, and more.
    - [Getting Started](#getting-started)
    - [Initial Send and Receive](#initial-send-and-receive)
    - [Collect and Print the Level 0 Treasure](#collect-and-print-the-level-0-treasure)
-   - [Print the Socket Information (Optional)](#print-the-socket-information-optional)
+   - [Print the Socket Information (Optional)](#print-the-socket-information-extra-credit)
    - [Generalize the Inputs](#generalize-the-inputs)
    - [Remove Any Extra Print Statements](#remove-any-extra-print-statements)
    - [Checkpoint 0](#checkpoint-0)
@@ -724,12 +724,12 @@ At this point, print out the message associated with the treasure,
 [as specified](#treasure---standard-output).
 
 
-## Print the Socket Information (Optional)
+## Print the Socket Information (Extra Credit)
 
 This section is _optional_.  It might be helpful or interesting for you to see
-where packets are being sent.
+where packets are being sent.  You will also get extra credit.
 
-Now follow the [specification](#socket-information---standard-error) to produce
+Now follow the [specification](#socket-information---standard-error-extra-credit) to produce
 the output showing the socket information before every *outgoing* communication
 (i.e., calls to `write()`, `send()`, and/or `sendto()`).  The output will be
 rather boring for level 0, but getting the output working for level 0 will
