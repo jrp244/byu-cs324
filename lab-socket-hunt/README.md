@@ -135,7 +135,8 @@ consistent of fewer than 64 bytes) and will follow this format:
 
      Here you *must* create a new socket with `socket()`.  You *may* use
      `getaddrinfo()`, but it is not required.  Make sure you close the old
-     socket!  (See
+     socket!  If you are using `connect()`, call `bind()` *before* calling
+     `connect()`. (See also
      [Socket Setup and Manipulation](#socket-setup-and-manipulation)).
    - 3: Read `m` datagrams from the socket (i.e., using the currently
      established local and remote ports), where `m` is specified by the next
@@ -170,7 +171,8 @@ consistent of fewer than 64 bytes) and will follow this format:
      - Compute the nonce by adding the remote ports from which the `m`
        datagrams were received.
      - Call `connect()` on the new socket to set the remote address and port,
-       for future communications.
+       for future communications (this must be done *after* `recvfrom()`, or
+       you will not be able to receive datagrams from arbitrary remote ports).
      - Send the directions request with the nonce value + 1.
 
      (See [Socket Setup and Manipulation](#socket-setup-and-manipulation) for
