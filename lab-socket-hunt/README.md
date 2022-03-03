@@ -501,31 +501,58 @@ declaring the following:
 	struct sockaddr_in6 ipv6addr_remote;
 ```
 
-and maintaining them along the way.  You can initialize your `struct
-sockaddr_in` with the value returned from `getaddrinfo()` using something like
+and maintaining them along the way.  You can initialize these structures with
+value populdated by `getaddrinfo()` and `getsockname()` using something like
 this:
 
 ```c
+	// populate ipv4addr_remote or ipv6addr_remote with address information
+        // found in the struct addrinfo from getaddrinfo()
 	af = rp->ai_family;
-	ipv4addr_remote = *(struct sockaddr_in *)rp->ai_addr;
+        if (af == AF_INET) {
+		ipv4addr_remote = *(struct sockaddr_in *)rp->ai_addr;
+	} else {
+		ipv6addr_remote = *(struct sockaddr_in6 *)rp->ai_addr;
+	}
 ```
-or:
+and
 ```c
+	// populate ipv4addr_local or ipv6addr_local with address information
+        // associated with sfd using getsockname()
 	af = rp->ai_family;
-	ipv6addr_remote = *(struct sockaddr_in6 *)rp->ai_addr;
+	socklen_t addrlen;
+        if (af == AF_INET) {
+		addrlen = sizeof(struct sockaddr_in);
+		getsockname(sfd, (struct sockaddr *)&ipv4addr_local, &addrlen);
+	} else {
+		addrlen = sizeof(struct sockaddr_in6);
+		getsockname(sfd, (struct sockaddr *)&ipv6addr_local, &addrlen);
+	}
 ```
 
 So you can later run something like this:
 
 ```c
-	if (connect(sfd, (struct sockaddr *)&ipv4addr, sizeof(struct sockaddr_in)) < 0) {
-		perror("connect()");
+	if (af == AF_INET) {
+		if (connect(sfd, (struct sockaddr *)&ipv4addr, sizeof(struct sockaddr_in)) < 0) {
+			perror("connect()");
+		}
+	} else {
+		if (connect(sfd, (struct sockaddr *)&ipv6addr, sizeof(struct sockaddr_in6)) < 0) {
+			perror("connect()");
+		}
 	}
 ```
-or:
+or
 ```c
-	if (connect(sfd, (struct sockaddr *)&ipv6addr, sizeof(struct sockaddr_in6)) < 0) {
-		perror("connect()");
+	if (af == AF_INET) {
+		if (connect(sfd, (struct sockaddr *)&ipv4addr, sizeof(struct sockaddr_in)) < 0) {
+			perror("connect()");
+		}
+	} else {
+		if (connect(sfd, (struct sockaddr *)&ipv6addr, sizeof(struct sockaddr_in6)) < 0) {
+			perror("connect()");
+		}
 	}
 ```
 
