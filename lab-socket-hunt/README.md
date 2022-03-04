@@ -534,11 +534,11 @@ So you can later run something like this:
 
 ```c
 	if (af == AF_INET) {
-		if (connect(sfd, (struct sockaddr *)&ipv4addr, sizeof(struct sockaddr_in)) < 0) {
+		if (connect(sfd, (struct sockaddr *)&ipv4addr_remote, sizeof(struct sockaddr_in)) < 0) {
 			perror("connect()");
 		}
 	} else {
-		if (connect(sfd, (struct sockaddr *)&ipv6addr, sizeof(struct sockaddr_in6)) < 0) {
+		if (connect(sfd, (struct sockaddr *)&ipv6addr_remote, sizeof(struct sockaddr_in6)) < 0) {
 			perror("connect()");
 		}
 	}
@@ -546,14 +546,21 @@ So you can later run something like this:
 or
 ```c
 	if (af == AF_INET) {
-		if (connect(sfd, (struct sockaddr *)&ipv4addr, sizeof(struct sockaddr_in)) < 0) {
-			perror("connect()");
+		ipv4addr_local.sin_family = AF_INET; // use AF_INET (IPv4)
+		ipv4addr_local.sin_port = htons(port); // specific port
+		ipv4addr_local.sin_addr.s_addr = 0; // any/all local addresses
+		if (bind(sfd, (struct sockaddr *)&ipv4addr_local, sizeof(struct sockaddr_in)) < 0) {
+			perror("bind()");
 		}
 	} else {
-		if (connect(sfd, (struct sockaddr *)&ipv6addr, sizeof(struct sockaddr_in6)) < 0) {
-			perror("connect()");
+		ipv6addr_local.sin6_family = AF_INET6; // IPv6 (AF_INET6)
+		ipv6addr_local.sin6_port = htons(port); // specific port
+		bzero(ipv6addr_local.sin6_addr.s6_addr, 16); // any/all local addresses
+		if (bind(sfd, (struct sockaddr *)&ipv6addr_local, sizeof(struct sockaddr_in6)) < 0) {
+			perror("bind()");
 		}
 	}
+
 ```
 
 
