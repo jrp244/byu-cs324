@@ -33,13 +33,12 @@ Remember the following:
  - End every header line with `\r\n`.
  - Ensure that the following four-character sequence exists beteween HTTP
    response headers and response body: `\r\n\r\n`.
-   end-of-headers sequence.
- - Use the CGI specification to see how the query string and socket are made
-   available to the CGI program.
+ - Use the CGI specification to see how the query string and client socket are
+   made available to the CGI program by the HTTP server.
 
 You should recall that there is a way that you can test your CGI program
-without a Web server (Hint: think of HW1 and HW2).
+*without* a Web server (Hint: think of HW1 and HW2).
 
-Hint: this whole program will be much simpler than you might think--perhaps
+Note: this whole program will be much simpler than you might think--perhaps
 even simpler than the program you wrote for your first homework assignment.
 But you might need to review CGI from the book and slides.
