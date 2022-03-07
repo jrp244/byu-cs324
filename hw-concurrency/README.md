@@ -10,7 +10,7 @@ with that code and analyze what it is doing.
 # Preparation
 
  1. Read the following in preparation for this assignment:
-    - Sections 11.1 - 11.4 in the book
+    - Sections 12.1 and 12.3 - 12.5 in the book
     - The man pages for the following:
       - `pthreads`
       - `sem_init()`
@@ -176,7 +176,8 @@ $ nc localhost port
 Answer the following questions, considering the three concurrency models
 examined in this assignment: processed-based (`echoserverp`); thread-based with
 spawning threads on-the-fly (`echoservert`); and threadpool-based
-(`echoservert_pre`). 
+(`echoservert_pre`).  You may use your own observations and/or refer to the book
+(e.g., section 12.1.2).
 
 
  19. Rank the terms in decreasing (most expensive to least expensive) order of
