@@ -172,12 +172,23 @@ $ nc localhost port
  18. What is the producer thread now waiting on?
 
 
-Name at least one pro and one con to each of the concurrent programming
-paradigms in this assignment.  You can use your own observations, as well as
-the book chapter.
 
- 19. `echoserverp`
+Answer the following questions, considering the three concurrency models
+examined in this assignment: processed-based (`echoserverp`); thread-based with
+spawning threads on-the-fly (`echoservert`); and threadpool-based
+(`echoservert_pre`). 
 
- 20. `echoservert`
 
- 21. `echoservert_pre`
+ 19. Rank the terms in decreasing (most expensive to least expensive) order of
+     run-time cost for handling a given client.
+
+ 20. Which (one or more) of the three, as implemented in this assignment,
+     has/have an explicit limitation in terms of number of clients that can be
+     handled concurrently?
+
+ 21. Which (one or more) of the three of the models allow(s) allow sharing of
+     memory and data structures without the use of inter-process communication
+     (e.g., pipes, sockets)?
+
+ 22. Which (one or more) of the three of the models seems to be the least
+     complex to implement?
