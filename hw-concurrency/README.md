@@ -167,7 +167,7 @@ $ nc localhost port
 
  16. How many consumers change state?
 
- 17. What event changes the state of the consumer?
+ 17. What event changes the state of the consumer(s)? (this question was accidentally a repeat of 15 :))
 
  18. What is the producer thread now waiting on?
 
