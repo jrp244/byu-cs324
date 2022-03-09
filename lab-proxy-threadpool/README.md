@@ -67,7 +67,7 @@ end-of-headers sequence, `\r\n\r\n`.  It returns 1 if all headers have been
 received (i.e., end-of-headers sequence is found) and 0 otherwise.
 
 In this lab, all requests will consist of only first line and one or more HTTP
-headers; there will be no request body.  
+headers; there will be no request body.
 
 
 ### `parse_request()`
@@ -212,28 +212,40 @@ this:
 GET http://www-notls.imaal.byu.edu:5599/cgi-bin/slowsend.cgi?obj=lyrics HTTP/1.1
 Host: www-notls.imaal.byu.edu:5599
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:97.0) Gecko/20100101 Firefox/97.0";
+
 ```
+(Some things will differ, like the "User-Agent" header, which identfies your
+client, and the port used.)
+
 It is appropriate to send a *full url* to a *proxy* server, but when sending
 directly to the *HTTP server*, sending just the *path* (and query string) is
 appropriate.  Also, the protocol should be changed to HTTP/1.0, and the
-"Connection" and "Proxy-Connection" headers added.  Here is an example:
+"Connection" and "Proxy-Connection" headers added.  These further enforce
+HTTP/1.0 behavior, which is discussed in the
+[next section](#communicating-with-the-http-server).
+
+  Here is an example:
+
 ```
 GET /cgi-bin/slowsend.cgi?obj=lyrics HTTP/1.0
 Host: www-notls.imaal.byu.edu:5599
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:97.0) Gecko/20100101 Firefox/97.0";
 Connection: close
 Proxy-Connection: close
+
 ```
+
 In summary, only the following have changed between the request that was
 received and the new one that was created:
 - The URL in the first line was changed to a path (plus query string).
 - The protocol is always changed to HTTP/1.0 (this simplifies the client-server
   interaction for the purposes of this lab).
 - The "Connection" and "Proxy-Connection" headers are added.
-   
+
 Remember that all lines in an HTTP request end with a carriage-return-newline
 sequence, `\r\n`, and the HTTP request headers are ended with
-the end-of-headers sequence, `\r\n`.
+the end-of-headers sequence, `\r\n\r\n` (i.e., a blank line after the last
+header).
 
 Use `printf()` and/or `print_bytes()` to print out the HTTP request you
 created.  The re-build and re-start your proxy, and make sure it works properly
@@ -288,11 +300,12 @@ section.
 
 To complete `handle_client()`, send the HTTP response back to the client,
 exactly as it was received from the server--no further manipulation needed.
-And close the socket associated with the client; your proxy uses HTTP/1.0, and
-you are done!
+Once you have done it, call `close()` on the socket associated with the client.
+Your proxy is using HTTP/1.0, so there will be no further HTTP requests over
+the existing connection.
 
 
-### Testing 
+### Testing
 
 TBD
 
@@ -300,8 +313,12 @@ TBD
 ## Part 3 - Threaded Web Proxy
 
 Once you have a working sequential HTTP proxy server, alter it to
-handle multiple requests concurrently.  Initially, spawn a new thread to handle
-each new connection request.
+handle multiple requests concurrently by spawning a new thread per client.
+Formulate your main loop so that every time a new client connects (i.e.,
+`accept()` returns) `pthread_create()` is called.  You will want to define a
+thread function that is *passed to* `pthread_create()` (i.e., its third
+argument) and *calls* `handle_client()`,  after which it waits for a new
+client.
 
 Note that with this particular thread paradigm, you should run your threads in
 detached mode to avoid memory leaks.  When a new thread is spawned, you
@@ -310,12 +327,40 @@ can put it in detached mode by calling within the thread routine itself:
 pthread_detach(pthread_self());
 ```
 
+Refer to the
+[concurrency homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-concurrency)
+for examples and code that you can integrate.
+
+
+### Testing
+
+TBD
+
 
 ## Part 4 - Threadpool
 
-For the final part of the lab, you will change your proxy server to use a pool
-of threads to handle concurrent HTTP requests instead of launching a new thread
-for each request.
+Now that you have some experience with multi-threaded server, change your proxy
+server to use a pool of threads to handle concurrent HTTP requests instead of
+launching a new thread for each request.
+
+When the program starts, initialize eight producer threads, a shared buffer
+(queue) with five slots, and the associated semaphores and other shared data
+structures to prepare the producer and consumers for handling concurrent
+requests.  Formulate your producer loop, so that every time a new client
+connects (i.e., `accept()` returns), the socket file descriptor returned is
+handed off to one of the consumers, after which it waits for a new client by
+calling `accept()` again.  You will need to modify your thread function so that
+instead of handling a single client, it continually loops, waiting on new
+clients from the shared buffer (queue) and handling them in turn.
+
+Again, refer to the
+[concurrency homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-concurrency)
+for examples and code that you can integrate.
+
+
+### Testing
+
+TBD
 
 
 # Evaluation
@@ -323,9 +368,10 @@ for each request.
 Your score will be computed out of a maximum of 100 points based on the
 following distribution:
 
- - 50 points for basic HTTP proxy functionality
- - 45 points for handling concurrent HTTP proxy requests using a threadpool
- - 5 compiles without any warnings
+ - 50 for basic HTTP proxy functionality
+ - 45 for handling concurrent HTTP proxy requests using a threadpool
+ - 5 - compiles without any warnings (this applies to your proxy code, not
+   `tiny` and friends).
 
 
 # Automated Testing
