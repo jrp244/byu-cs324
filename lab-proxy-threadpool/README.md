@@ -349,7 +349,7 @@ the existing connection.
 At this point you should be able to pass:
  - [Tests performed against a non-local Web server](#manual-testing---non-local-server).
  - [Tests performed against a local Web server](#manual-testing---local-server).
- - [Automated tests](#automated-tests) with the following command:
+ - [Automated tests](#automated-testing) with the following command:
    ```bash
    $ ./driver.py -b 50 threadpool
    ```
@@ -382,7 +382,7 @@ for examples and code that you can integrate.
 At this point you should be able to pass:
  - [Tests performed against a non-local Web server](#manual-testing---non-local-server).
  - [Tests performed against a local Web server](#manual-testing---local-server).
- - [Automated tests](#automated-tests) with the following command:
+ - [Automated tests](#automated-testing) with the following command:
    ```bash
    $ ./driver.py -b 50 -c 45 multithread
    ```
@@ -414,7 +414,7 @@ for examples and code that you can integrate.
 At this point you should be able to pass:
  - [Tests performed against a non-local Web server](#manual-testing---non-local-server).
  - [Tests performed against a local Web server](#manual-testing---local-server).
- - [Automated tests](#automated-tests) with the following command:
+ - [Automated tests](#automated-testing) with the following command:
    ```bash
    $ ./driver.py -b 50 -c 45 threadpool
    ```
