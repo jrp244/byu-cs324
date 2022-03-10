@@ -15,7 +15,7 @@ programming by building a working HTTP proxy server with a threadpool.
    - [Part 2 - Sequential Web Proxy](#part-2---sequential-web-proxy)
    - [Part 3 - Threaded Web Proxy](#part-3---threaded-web-proxy)
    - [Part 4 - Threadpool](#part-4---threadpool)
- - [Testing](#testing)
+ - [Testing](#testing-4)
    - [Manual Testing - Non-Local Server](#manual-testing---non-local-server)
    - [Manual Testing - Local Server](#manual-testing---local-server)
    - [Automated Testing](#automated-testing)
