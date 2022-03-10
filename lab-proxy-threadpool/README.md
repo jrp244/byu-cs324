@@ -7,6 +7,21 @@ programming by building a working HTTP proxy server with a threadpool.
 
 # Table of Contents
 
+ - [Overview](#overview)
+ - [Preparation](#preparation)
+   - [Reading](#reading)
+ - [Instructions](#instructions)
+   - [Part 1 - HTTP Request Parsing](#part-1---http-request-parsing)
+   - [Part 2 - Sequential Web Proxy](#part-2---sequential-web-proxy)
+   - [Part 3 - Threaded Web Proxy](#part-3---threaded-web-proxy)
+   - [Part 4 - Threadpool](#part-4---threadpool)
+ - [Testing](#testing)
+   - [Manual Testing - Non-Local Server](#manual-testing---non-local-server)
+   - [Manual Testing - Local Server](#manual-testing---local-server)
+   - [Automated Testing](#automated-testing)
+ - [Evaluation](#evaluation)
+ - [Submission](#submission)
+
 
 # Overview
 
@@ -381,23 +396,7 @@ At this point you should be able to pass:
    ```
 
 
-# Evaluation
-
-Your score will be computed out of a maximum of 100 points based on the
-following distribution:
-
- - 50 for basic HTTP proxy functionality
- - 45 for handling concurrent HTTP proxy requests using a threadpool
- - 5 - compiles without any warnings (this applies to your proxy code, not
-   `tiny` and friends).
-
-Run the following to check your implementation:
-
-```b
-$ ./driver.py -b 50 -c 45 threadpool
-```
-
-# Testing Tools
+# Testing
 
 Some tools are provided for testing--both manual and automated:
 
@@ -466,7 +465,7 @@ $ rm tmp1 tmp1p tmp2 tmp2p tmp3 tmp3p tmp4 tmp4p tmp5 tmp5p
 ```
 
 
-## Manual Testing - Non-Local Server
+## Manual Testing - Local Server
 
 While testing on "non-local" Web servers is useful, having a copy of the code
 for `tiny` is helpful for testing right on your local machine.  To use `tiny`
@@ -605,6 +604,23 @@ For example:
    If you use this option, be sure to delete the directors afterwards!
 
 Any of the above options can be used together.
+
+
+# Evaluation
+
+Your score will be computed out of a maximum of 100 points based on the
+following distribution:
+
+ - 50 for basic HTTP proxy functionality
+ - 45 for handling concurrent HTTP proxy requests using a threadpool
+ - 5 - compiles without any warnings (this applies to your proxy code, not
+   `tiny` and friends).
+
+Run the following to check your implementation:
+
+```b
+$ ./driver.py -b 50 -c 45 threadpool
+```
 
 
 # Submission
