@@ -53,6 +53,30 @@ concurrency, a crucial systems concept.  In the the third part, you will modify
 your concurrency approach to use a threadpool.
 
 
+# Preparation
+
+## Reading
+
+Read the following in preparation for this assignment:
+  - Sections 11.1 - 11.6, 12.1, and 12.3 - 12.5 in the book
+  - The man pages for the following:
+    - `tcp`
+    - `socket`
+    - `socket()`
+    - `send()`
+    - `recv()`
+    - `bind()`
+    - `connect()`
+    - `getaddrinfo()`
+    - `pthread_create()`
+    - `pthread_detach()`
+    - `pthread_self()`
+    - `sem_init()`
+    - `sem_post()`
+    - `sem_wait()`
+    - `sem_overview()` (unnamed semaphores)
+
+
 # Instructions
 
 ## Part 1 - HTTP Request Parsing
