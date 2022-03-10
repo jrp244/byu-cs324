@@ -625,4 +625,11 @@ $ ./driver.py -b 50 -c 45 threadpool
 
 # Submission
 
-TBD
+Run the following command to `tar` your file(s):
+
+```bash
+$ make handin
+```
+
+This creates a `.tar` file in the parent directory.  Upload this file to
+the assignment page on LearningSuite.
