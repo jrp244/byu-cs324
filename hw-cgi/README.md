@@ -4,6 +4,12 @@ The purpose of this assignment is to give you hands-on experience with
 CGI.
 
 
+# Preparation
+
+Read the following in preparation for this assignment:
+  - Section 11.5.4 in the book
+
+
 # Instructions
 
 Write a CGI program in C.  This is a program that would be executed by an HTTP server
