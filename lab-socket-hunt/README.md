@@ -103,8 +103,10 @@ consistent of fewer than 64 bytes) and will follow this format:
        source address or port of the packet received by the server).
      - 130: The message had an incorrect length.
      - 131: The value of the nonce was incorrect.
-     - 133: After multiple tries the server was unable to bind properly to the
+     - 132: After multiple tries the server was unable to bind properly to the
        address and port that it had attempted.
+     - 134: A bad level was sent the server on the initial request, or the
+       first byte of the initial request was not zero.
    Note that in the case where byte 0 has value 0 or a value greater than 127,
    the entire message will only be one byte long.
  - Bytes 1 - `n` (where `n` matches the value of byte 0; only applies where `n`
