@@ -11,10 +11,10 @@ SUMS = [
         '19fa1bc24ef9d9d0ddda9ee6a6168c393fae5e27',
 ]
 
-
 def main():
-    for qs in QS:
-        p = subprocess.run(['./cgiprog'], env={"QUERY_STRING": qs},
+    key = b'\x51\x55\x45\x52\x59\x5f\x53\x54\x52\x49\x4e\x47'.decode('utf-8')
+    for val in QS:
+        p = subprocess.run(['./cgiprog'], env={key: val},
                 stdout=subprocess.PIPE)
         val = hashlib.sha1(p.stdout).hexdigest()
         if val in SUMS:
