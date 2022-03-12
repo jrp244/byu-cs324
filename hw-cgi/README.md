@@ -48,3 +48,14 @@ You should recall that there is a way that you can test your CGI program
 Note: this whole program will be much simpler than you might think--perhaps
 even simpler than the program you wrote for your first homework assignment.
 But you might need to review CGI from the book and slides.
+
+
+# Automated Testing
+
+For your convenience, a script is also provided for automated testing.  This is
+not a replacement for manual testing but can be used as a sanity check.  You
+can use it by simply running the following:
+
+```
+./driver.py
+```
