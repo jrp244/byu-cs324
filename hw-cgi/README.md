@@ -43,7 +43,8 @@ Remember the following:
    made available to the CGI program by the HTTP server.
 
 You should recall that there is a way that you can test your CGI program
-*without* a Web server (Hint: think of HW1 and HW2).
+*without* a Web server.  See the
+[catmatch assignment](https://github.com/cdeccio/byu-cs324-w2022/blob/master/hw-catmatch/README.md) for example.
 
 Note: this whole program will be much simpler than you might think--perhaps
 even simpler than the program you wrote for your first homework assignment.
