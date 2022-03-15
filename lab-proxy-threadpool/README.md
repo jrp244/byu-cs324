@@ -27,7 +27,7 @@ programming by building a working HTTP proxy server with a threadpool.
 
 A Web proxy is a program that acts as a intermediary between an HTTP client
 (i.e., a Web browser) and an HTTP server.  Instead of requesting a resource
-directing from the HTTP server, the HTTP client contacts the proxy server,
+directly from the HTTP server, the HTTP client contacts the proxy server,
 which forwards the request on to the HTTP server. When the HTTP server replies
 to the proxy, the proxy sends the reply on to the browser.  In this way, the
 client acts as both a *server* (to the Web browser) and a *client* (to the HTTP
