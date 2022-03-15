@@ -125,24 +125,24 @@ time on the CPU.
     additional performance gain?
 
  5. Using the "elapsed time" output by `time`, calculate the overall *speedup*
-    (`S<sub>p</sub>`) achieved when four cores were used (i.e., `p` = 4).  Show
+    (<code>S<sub>p</sub></code>) achieved when four cores were used (i.e., `p` = 4).  Show
     the steps you used to calculate it.
 
- 6. Using the result from #5, compute the efficiency (`E<sub>p</sub>`) of using
+ 6. Using the result from #5, compute the efficiency (<code>E<sub>p</sub></code>) of using
     four cores (i.e., `p` = 4)?  Show the steps you used to calculate it.
 
  7. Briefly explain why the efficiency calculated in #6 is less than 1.
 
  8. Consider Amdahl's Law:
-    ```
-    T<sub>k</sub> = pT/k + (1-p)T`
-    ```
+    <code>
+    T<sub>k</sub> = pT/k + (1-p)T
+    </code>
     In this case `k` is speedup of the parallel region only, and `p` is the
     fraction of original run time that is parallelizable.
 
     Find the fraction of parallelizable code, `p`, by using:
     - the answer to #2 to find `k` (speedup of parallelizable code);
-    - the "elapsed time" output by `time` for 4 threads as `T<sub>k</sub>`; and 
+    - the "elapsed time" output by `time` for 4 threads as <code>T<sub>k</sub></code>; and 
     - the "elapsed time" output by `time` for 1 threads as `T`.
 
 
