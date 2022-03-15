@@ -9,7 +9,7 @@ demonstrate the efficiency by measuring the computation.
 # Preparation
 
 Read the following in preparation for this assignment:
- - Sections 12.6 in the book
+ - Sections 1.9.1 - 1.9.2 and 12.6 in the book
  - LLNL's [OpenMP Tutorial](https://hpc-tutorials.llnl.gov/openmp/)
  - Introduction in the header comments of `mandelbrot.c`.
 
