@@ -134,15 +134,17 @@ time on the CPU.
  7. Briefly explain why the efficiency calculated in #6 is less than 1.
 
  8. Consider Amdahl's Law:
+
     <code>
-    T<sub>k</sub> = pT/k + (1-p)T
+    T<sub>α</sub> = pT/α + (1-p)T
     </code>
-    In this case `k` is speedup of the parallel region only, and `p` is the
+
+    In this case `α` is speedup of the parallel region only, and `p` is the
     fraction of original run time that is parallelizable.
 
     Find the fraction of parallelizable code, `p`, by using:
-    - the answer to #2 to find `k` (speedup of parallelizable code);
-    - the "elapsed time" output by `time` for 4 threads as <code>T<sub>k</sub></code>; and 
+    - the answer to #2 to find `α` (speedup of parallelizable code);
+    - the "elapsed time" output by `time` for 4 threads as <code>T<sub>α</sub></code>; and
     - the "elapsed time" output by `time` for 1 threads as `T`.
 
 
