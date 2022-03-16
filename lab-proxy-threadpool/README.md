@@ -12,8 +12,8 @@ programming by building a working HTTP proxy server with a threadpool.
    - [Reading](#reading)
  - [Instructions](#instructions)
    - [Part 1 - HTTP Request Parsing](#part-1---http-request-parsing)
-   - [Part 2 - Sequential Web Proxy](#part-2---sequential-web-proxy)
-   - [Part 3 - Threaded Web Proxy](#part-3---threaded-web-proxy)
+   - [Part 2 - Sequential HTTP Proxy](#part-2---sequential-http-proxy)
+   - [Part 3 - Threaded HTTP Proxy](#part-3---threaded-http-proxy)
    - [Part 4 - Threadpool](#part-4---threadpool)
  - [Testing](#testing-4)
    - [Manual Testing - Non-Local Server](#manual-testing---non-local-server)
@@ -149,7 +149,7 @@ At this point, remove or comment out the call to `test_parser()` in `main()`;
 it was just used for testing.
 
 
-## Part 2 - Sequential Web Proxy
+## Part 2 - Sequential HTTP Proxy
 
 As you implement this section, you might find it helpful to refer to the TCP
 code from the
@@ -160,10 +160,26 @@ code from the
 
 Write functions for each of the following:
 
- - `open_sfd()` - Create a socket with address family `AF_INET` and type
-   `SOCK_STREAM`, `bind()` it to a port passed as the first argument from the
-   command line, and configure it for accepting new clients with `listen()`.
-   Return the file descriptor associated with the server socket.
+ - `open_sfd()` - Create and configure a TCP socket for listening and accepting
+   new client connections.
+   - Create a socket with address family `AF_INET` and type
+     `SOCK_STREAM`.
+   - Use the following command to set an option on the socket to
+     allow it bind to an address and port already in use:
+
+     ```c
+     int optval = 1;
+     setsockopt(sfd, SOL_SOCKET, SO_REUSEPORT, &optval, sizeof(optval));
+     ```
+
+     While this might seem like a bad idea, during development of your proxy
+     server, it will allow you to immediately restart your proxy server after
+     failure, rather than having to wait for it to time out.
+
+   - `bind()` it to a port passed as the first argument from the
+     command line, and configure it for accepting new clients with `listen()`.
+
+   - Return the file descriptor associated with the server socket.
  - `handle_client()` - Given a newly created file descriptor, returned from
    `accept()`, handle a client HTTP request.  For now, just have this method do
    the following:
@@ -217,7 +233,13 @@ $ curl -x http://localhost:port/ http://www-notls.imaal.byu.edu/cgi-bin/slowsend
 `curl` is a command-line HTTP client, described more in
 [the section on manual testing](#manual-testing---non-local-server).
 For the purposes of this section, `curl` creates and sends an HTTP request to
-your proxy server.
+your proxy server, which is designated with `-x`.
+
+Note that the request to `www-notls.imaal.byu.edu:5599` is included here and in
+later tests only to test that your proxy server can properly parse the
+non-default HTTP port.  However, that particular server and port will not be
+part of tests that require your proxy server to actually connect to a Web
+server because there is no Web server listening there.
 
 Your proxy server (i.e., in `handle_client()`) should indicate that it has
 received the client request by printing out the appropriate parts of the
@@ -250,7 +272,7 @@ this:
 ```
 GET http://www-notls.imaal.byu.edu:5599/cgi-bin/slowsend.cgi?obj=lyrics HTTP/1.1
 Host: www-notls.imaal.byu.edu:5599
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:97.0) Gecko/20100101 Firefox/97.0";
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:97.0) Gecko/20100101 Firefox/97.0
 
 ```
 (Some things will differ, like the "User-Agent" header, which identfies your
@@ -263,23 +285,41 @@ appropriate.  Also, the protocol should be changed to HTTP/1.0, and the
 HTTP/1.0 behavior, which is discussed in the
 [next section](#communicating-with-the-http-server).
 
-  Here is an example:
+Here is an example:
 
 ```
 GET /cgi-bin/slowsend.cgi?obj=lyrics HTTP/1.0
 Host: www-notls.imaal.byu.edu:5599
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:97.0) Gecko/20100101 Firefox/97.0";
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:97.0) Gecko/20100101 Firefox/97.0
 Connection: close
 Proxy-Connection: close
 
 ```
 
-In summary, only the following have changed between the request that was
-received and the new one that was created:
-- The URL in the first line was changed to a path (plus query string).
-- The protocol is always changed to HTTP/1.0 (this simplifies the client-server
+To simplify your request parsing and creation, you *may* simply replace *all*
+headers that were sent by the client and create your own `Host`, `User-Agent`,
+`Connection`, and `Proxy-Connection` headers, as shown above.  A sample value
+for `User-Agent` is provided in your `proxy.c` file.  The value for the `Host`
+field will be either `hostname:port` or simply `hostname`, if the port is the
+default HTTP port.  For example:
+```
+Host: www-notls.imaal.byu.edu:5599
+```
+or
+```
+Host: www-notls.imaal.byu.edu
+```
+In the second example, port 80 is implied.
+
+In summary, for the new HTTP request that was created:
+- The *URL* in the first line, as received by the client, was changed to be a
+  *path* (plus query string).
+- The protocol is always HTTP/1.0 (this simplifies the client-server
   interaction for the purposes of this lab).
 - The "Connection" and "Proxy-Connection" headers are added.
+- The headers from the client may be completely replaced with `Host`,
+  `User-Agent`, `Connection`, and `Proxy-Connection` headers that are generated
+  by the proxy, for simplicity.
 
 Remember that all lines in an HTTP request end with a carriage-return-newline
 sequence, `\r\n`, and the HTTP request headers are ended with
@@ -331,8 +371,17 @@ server.  Modify your `handle_client()` function again:
    necessary.
  - Close the socket associated with the HTTP server.
 
-Now would be a good time to test with the same commands you did in the last
-section.
+The re-build and re-start your proxy, and make sure it works properly when you
+run the following:
+
+```bash
+$ curl -x http://localhost:port/ http://www-notls.imaal.byu.edu/cgi-bin/slowsend.cgi?obj=lyrics
+$ ./slow-client.py -x http://localhost:port/ -b 1 http://www-notls.imaal.byu.edu/cgi-bin/slowsend.cgi?obj=lyrics
+```
+(Replace `port` with the port on which your proxy server is listening.  Also
+note that the request to `www-notls.imaal.byu.edu:5599` is not included in
+these latest tests. That URL was only used to make sure your proxy could parse
+a non-standard port, which functionality will be useful later.)
 
 
 ### Returning the HTTP Response
@@ -355,7 +404,7 @@ At this point you should be able to pass:
    ```
 
 
-## Part 3 - Threaded Web Proxy
+## Part 3 - Threaded HTTP Proxy
 
 Once you have a working sequential HTTP proxy server, alter it to
 handle multiple requests concurrently by spawning a new thread per client.
