@@ -171,15 +171,6 @@ For each run, record both
  - 10 points for correct answers to questions in Part 4 (1 point per question)
 
 
-# Submission
-
-Run the following command to `tar` your file(s):
-
-```bash
-$ make handin
-```
-
-This creates a `.tar` file in the parent directory.  Upload this file to
 # Cleanup
 
 Remove `pic.ppm` and `pic.png` from your filesystem:
