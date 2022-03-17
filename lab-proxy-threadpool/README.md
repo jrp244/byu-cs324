@@ -560,7 +560,6 @@ for testing:
 
  3. Start `tiny`:
     ```bash
-    $ cd tiny
     $ ./tiny port2
     ```
 
