@@ -107,6 +107,12 @@ While your command is running, run the `top` command in another window *on the
 same machine* to see that your program is not competing with any others for
 time on the CPU.
 
+For each run, record both
+ - the elapsed time for *only the parallel region* (i.e., the output from your
+   program)
+ - the elapsed time for the entire program execution (i.e., "elapsed time"
+   from `time` output)
+
 
 ## Part 4 - Questions
 
