@@ -60,7 +60,8 @@ this socket is ready for writing. Because the socket is non-blocking,
 case, the return value is -1 and `errno` is set to `EINPROGRESS` (see the
 `connect()` man page).  This also means that when iterating through the results
 of `getaddrinfo()` when a socket is non-blocking, the return value of
-`connect()` is not a useful check.
+`connect()` is not a useful check for determining whether a given address is
+reachable.
 
 
 ## Client Request States
