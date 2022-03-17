@@ -118,22 +118,25 @@ time on the CPU.
  2. What happens to the time associated with computation of the parallel region
     (i.e., the first `for` loop) as the computation time doubles?
 
- 3. At what point (if any) did you observe stop observing the exepected
+ 3. What is the speedup (`α`) of the *only the parallel region* (i.e., the
+    first `for` loop) when four threads are used?
+
+ 4. At what point (i.e., how many threads) did you stop observing the expected
     performance gain in the parallel region of the code?
 
- 4. At the point you indicated in #3, what was the reason for the lack of
+ 5. At the point you indicated in &#35;4, what was the reason for the lack of
     additional performance gain?
 
- 5. Using the "elapsed time" output by `time`, calculate the overall *speedup*
+ 6. Using the "elapsed time" output by `time`, calculate the *overall* speedup
     (<code>S<sub>p</sub></code>) achieved when four cores were used (i.e., `p` = 4).  Show
     the steps you used to calculate it.
 
- 6. Using the result from #5, compute the efficiency (<code>E<sub>p</sub></code>) of using
+ 7. Using the result from &#35;6, compute the efficiency (<code>E<sub>p</sub></code>) of using
     four cores (i.e., `p` = 4)?  Show the steps you used to calculate it.
 
- 7. Briefly explain why the efficiency calculated in #6 is less than 1.
+ 8. Briefly explain why the efficiency calculated in &#35;7 is less than 1.
 
- 8. Consider Amdahl's Law:
+ 9. Consider Amdahl's Law:
 
     <code>
     T<sub>α</sub> = pT/α + (1-p)T
@@ -143,11 +146,34 @@ time on the CPU.
     fraction of original run time that is parallelizable.
 
     Find the fraction of parallelizable code, `p`, by using:
-    - the answer to #2 to find `α` (speedup of parallelizable code);
-    - the "elapsed time" output by `time` for 4 threads as <code>T<sub>α</sub></code>; and
-    - the "elapsed time" output by `time` for 1 threads as `T`.
+    - the answer to &#35;3, `α` (speedup of parallel region);
+    - the "elapsed time" output by `time` for 4 threads as
+      <code>T<sub>α</sub></code>; and
+    - the "elapsed time" output by `time` for 1 thread as `T`.
+
+ 10. Using the result from &#35;9, as the number of threads grows indefinitely
+     (`α` approaches infinity), what does <code>T<sub>α</sub></code> approach?
+
+     For the purposes of this problem, assume that the non-parallel region does
+     not vary with `α`.
 
 
+# Evaluation
+
+ - 5 points for correct program output (i.e., `pic.ppm` matches)
+ - 5 points for correct run times
+ - 10 points for correct answers to questions in Part 4 (1 point per question)
+
+
+# Submission
+
+Run the following command to `tar` your file(s):
+
+```bash
+$ make handin
+```
+
+This creates a `.tar` file in the parent directory.  Upload this file to
 # Cleanup
 
 Remove `pic.ppm` and `pic.png` from your filesystem:
@@ -159,7 +185,9 @@ $ rm -f pic.ppm pic.png
 
 # Submission
 
-In comments at the top of `mandelbrot.c`, please include the answers to the
-questions from Part 4.
+In comments at the top of `mandelbrot.c`, please include:
+ - the compute times for running your program with 1, 2, 4, 8, 16, and 32
+   cores.
+ - the answers to the questions from Part 4.
 
 Upload `mandelbrot.c` to the assignment page on LearningSuite.
