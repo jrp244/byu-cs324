@@ -327,8 +327,8 @@ the end-of-headers sequence, `\r\n\r\n` (i.e., a blank line after the last
 header).
 
 Use `printf()` and/or `print_bytes()` to print out the HTTP request you
-created.  The re-build and re-start your proxy, and make sure it works properly
-when you run the following:
+created.  Then re-build and re-start your proxy, and make sure it works
+properly when you run the following:
 
 ```bash
 $ curl -x http://localhost:port/ http://www-notls.imaal.byu.edu:5599/cgi-bin/slowsend.cgi?obj=lyrics
