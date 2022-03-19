@@ -13,7 +13,7 @@ concepts by building a working HTTP proxy server that uses epoll.
    - [Reading](#reading)
  - [Instructions](#instructions)
    - [Part 1 - HTTP Request Parsing](#part-1---http-request-parsing)
-   - [Part 2 - I/O Multiplexing HTTP Proxy](#part-2---i-o-multiplexing-http-proxy)
+   - [Part 2 - I/O Multiplexing HTTP Proxy](#part-2---io-multiplexing-http-proxy)
  - [Testing](#testing-4)
    - [Manual Testing - Non-Local Server](#manual-testing---non-local-server)
    - [Manual Testing - Local Server](#manual-testing---local-server)
