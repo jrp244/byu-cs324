@@ -342,7 +342,7 @@ Replace `port` with the port returned by `./port-for-user.pl`.
 Now, from another terminal on the same machine, run the following:
 
 ```bash
-$ curl -x http://localhost:port/ http://www-notls.imaal.byu.edu/cgi-bin/slowsend.cgi?obj=lyrics
+$ curl -x http://localhost:port/ "http://www-notls.imaal.byu.edu/cgi-bin/slowsend.cgi?obj=lyrics"
 ```
 (Replace `port` with the port on which your proxy server is listening.)
 
@@ -375,8 +375,8 @@ Re-build and re-start your proxy, and make sure it works properly when you run
 the following:
 
 ```bash
-$ curl -x http://localhost:port/ http://www-notls.imaal.byu.edu/cgi-bin/slowsend.cgi?obj=lyrics
-$ ./slow-client.py -x http://localhost:port/ -b 1 http://www-notls.imaal.byu.edu/cgi-bin/slowsend.cgi?obj=lyrics
+$ curl -x http://localhost:port/ "http://www-notls.imaal.byu.edu/cgi-bin/slowsend.cgi?obj=lyrics"
+$ ./slow-client.py -x http://localhost:port/ -b 1 "http://www-notls.imaal.byu.edu/cgi-bin/slowsend.cgi?obj=lyrics"
 ```
 (Replace `port` with the port on which your proxy server is listening.)
 
@@ -417,8 +417,8 @@ for the `SEND_REQUEST` and `READ_RESPONSE` states, as specified in the
 Now would be a good time to test with the following commands:
 
 ```bash
-$ curl -x http://localhost:port/ http://www-notls.imaal.byu.edu/cgi-bin/slowsend.cgi?obj=lyrics
-$ ./slow-client.py -x http://localhost:port/ -b 1 http://www-notls.imaal.byu.edu/cgi-bin/slowsend.cgi?obj=lyrics
+$ curl -x http://localhost:port/ "http://www-notls.imaal.byu.edu/cgi-bin/slowsend.cgi?obj=lyrics"
+$ ./slow-client.py -x http://localhost:port/ -b 1 "http://www-notls.imaal.byu.edu/cgi-bin/slowsend.cgi?obj=lyrics"
 ```
 
 Just as before, you should not only observe that the proxy server successfully
