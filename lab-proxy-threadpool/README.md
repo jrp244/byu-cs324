@@ -510,7 +510,7 @@ it will sleep in between lines that it sends.
 Now run the following:
 
 ```bash
-$ curl -o tmp1p -x http://localhost:port/ http://www-notls.imaal.byu.edu/cgi-bin/index.html
+$ curl -o tmp1p -x http://localhost:port/ http://www-notls.imaal.byu.edu/index.html
 $ ./slow-client.py -o tmp2p -x http://localhost:port/ -b 1 http://www-notls.imaal.byu.edu/index.html
 $ curl -o tmp3p -x http://localhost:port/ "http://www-notls.imaal.byu.edu/cgi-bin/slowsend.cgi?obj=lyrics"
 $ ./slow-client.py -o tmp4p -x http://localhost:port/ -b 1 "http://www-notls.imaal.byu.edu/cgi-bin/slowsend.cgi?obj=lyrics"
