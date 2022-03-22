@@ -312,7 +312,7 @@ Host: www-notls.imaal.byu.edu
 In the second example, port 80 is implied.
 
 In summary, for the new HTTP request that was created:
-- The *URL* in the first line, as received by the client, was changed to be a
+- The *URL* in the first line, as received from the client, was changed to be a
   *path* (plus query string).
 - The protocol is always HTTP/1.0 (this simplifies the client-server
   interaction for the purposes of this lab).
