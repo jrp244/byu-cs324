@@ -121,8 +121,8 @@ For each run, record both
     $ cat /proc/cpuinfo | grep ^proc | wc -l
     ```
 
- 2. What happens to the time associated with computation of the parallel region
-    (i.e., the first `for` loop) as the computation time doubles?
+ 2. What happens to the time associated with computation of *only the parallel
+    region* (i.e., the first `for` loop) as the number of threads doubles?
 
  3. What is the speedup (`α`) of the *only the parallel region* (i.e., the
     first `for` loop) when four threads are used?
