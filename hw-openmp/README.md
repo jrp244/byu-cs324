@@ -82,7 +82,7 @@ file is the same as that you computed in the previous section.
 
 ## Part 3 - Measure and Record Compute Times
 
-Use the `omp_get_wtick()` function to measure the "wall clock" time required to
+Use the `omp_get_wtime()` function to measure the "wall clock" time required to
 carry out the first `for` loop (i.e., the one that is parallelized).  When the
 `for` loop has finished, print out the number of seconds required to compute
 the loop (in seconds).  Re-compile, and make sure that it runs properly.
