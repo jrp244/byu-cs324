@@ -125,7 +125,8 @@ For each run, record both
     region* (i.e., the first `for` loop) as the number of threads doubles?
 
  3. What is the speedup (`α`) of the *only the parallel region* (i.e., the
-    first `for` loop) when four threads are used?
+    first `for` loop) when four threads are used?  Hint: calculate
+    <code>S<sub>p</sub></code> for just the parallel region, with `p` = 4.
 
  4. At what point (i.e., how many threads) did you stop observing the expected
     performance gain in the parallel region of the code?
@@ -133,12 +134,15 @@ For each run, record both
  5. At the point you indicated in &#35;4, what was the reason for the lack of
     additional performance gain?
 
- 6. Using the "elapsed time" output by `time`, calculate the *overall* speedup
-    (<code>S<sub>p</sub></code>) achieved when four cores were used (i.e., `p` = 4).  Show
-    the steps you used to calculate it.
+ 6. What is the *overall* speedup when four threads are used?  Hint: calculate
+    <code>S<sub>p</sub></code> for the overall execution time of the program
+    (i.e., using the "elapsed time" output by `time`), with `p` = 4.  Show the
+    steps you used to calculate it.
 
- 7. Using the result from &#35;6, compute the efficiency (<code>E<sub>p</sub></code>) of using
-    four cores (i.e., `p` = 4)?  Show the steps you used to calculate it.
+ 7. Using the result from &#35;6, compute the efficiency
+    (<code>E<sub>p</sub></code>) of using four cores (i.e., `p` = 4) to
+    parallelize with respect to *overall* execution time.  Show the steps you
+    used to calculate it.
 
  8. Briefly explain why the efficiency calculated in &#35;7 is less than 1.
 
