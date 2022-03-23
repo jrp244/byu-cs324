@@ -490,7 +490,7 @@ $ ./proxy port
 Then in another window on the same machine, run the following:
 
 ```bash
-$ curl -o tmp1 http://www-notls.imaal.byu.edu/cgi-bin/index.html
+$ curl -o tmp1 http://www-notls.imaal.byu.edu/index.html
 $ ./slow-client.py -o tmp2 -b 1 http://www-notls.imaal.byu.edu/index.html
 $ curl -o tmp3 "http://www-notls.imaal.byu.edu/cgi-bin/slowsend.cgi?obj=lyrics"
 $ ./slow-client.py -o tmp4 -b 1 "http://www-notls.imaal.byu.edu/cgi-bin/slowsend.cgi?obj=lyrics"
