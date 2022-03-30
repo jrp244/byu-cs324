@@ -477,7 +477,7 @@ Your score will be computed out of a maximum of 100 points based on the
 following distribution:
 
  - 20 for basic HTTP proxy functionality
- - 75 for handling concurrent HTTP proxy requests using a threadpool
+ - 75 for handling concurrent HTTP proxy requests using epoll
  - 5 - compiles without any warnings (this applies to your proxy code, not
    `tiny` and friends).
 
