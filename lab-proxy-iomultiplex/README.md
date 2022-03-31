@@ -11,6 +11,7 @@ concepts by building a working HTTP proxy server that uses epoll.
  - [Overview](#overview)
  - [Preparation](#preparation)
    - [Reading](#reading)
+   - [epoll Echo Server Example](#epoll-echo-server-example)
  - [Instructions](#instructions)
    - [Part 1 - HTTP Request Parsing](#part-1---http-request-parsing)
    - [Part 2 - I/O Multiplexing HTTP Proxy](#part-2---io-multiplexing-http-proxy)
@@ -227,6 +228,21 @@ Read the following in preparation for this assignment:
     - `bind()`
     - `connect()`
     - `getaddrinfo()`
+
+
+## epoll Echo Server Example
+
+The `echoserver-epoll` directory contains a working version of a echo server
+using epoll, complete with non-blocking sockets and edge-triggered monitoring.
+To compile it, run the following from the `echoserver-epoll` directory:
+
+```bash
+$ gcc -o echoservere echoservere.c
+```
+
+You can use the code as a guide for building your HTTP proxy server with epoll.
+It runs the same way as the echo server implementations from the
+[concurrency homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-concurrency).
 
 
 # Instructions
