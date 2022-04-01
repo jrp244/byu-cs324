@@ -19,7 +19,7 @@ proxy: proxy.o
 # Creates a tarball in ../proxylab-handin.tar that you can then
 # hand in. DO NOT MODIFY THIS!
 handin:
-	(make clean; cd ..; tar cvf $(USER)-proxylab1-handin.tar --exclude tiny --exclude nop-server.py --exclude slow-client.py --exclude proxy --exclude driver.py --exclude port-for-user.pl --exclude ".*" --exclude README.md lab-proxy-threadpool)
+	(make clean; cd ..; tar cvf $(USER)-proxylab2-handin.tar --exclude tiny --exclude nop-server.py --exclude slow-client.py --exclude proxy --exclude driver.py --exclude port-for-user.pl --exclude ".*" --exclude README.md lab-proxy-iomultiplex)
 
 clean:
 	rm -f *~ *.o proxy core *.tar *.zip *.gzip *.bzip *.gz
