@@ -36,8 +36,8 @@ contents of the manual page for the program `man`.  With the default pager
  - `q`: quit
 
 Now read through the man page for `man`, especially the sections on "SYNOPSIS",
-"DESCRIPTION", "EXAMPLES", "OVERVIEW", and "OPTIONS".  And look closely at the
-`-f` and `-k` options, which will be useful in the next section.
+"DESCRIPTION", "EXAMPLES", "OVERVIEW", and "OPTIONS".  Look closely at the
+`-f` and `-k` options, _which will be useful in the next section_.
 
 
 ## Questions
@@ -49,16 +49,19 @@ is opened.
 
  1. What are the numbers associated with the manual sections for executable
     programs, system calls, and library calls, respectively?
- 2. Which section number(s) contain a man page for `open`?
- 3. What three `#include` lines should be included to use the `open()` system
+ 2. Which section number(s) contain a man page for `kill`?
+ 3. Which section number(s) contain a man page for `exit`?
+ 4. Which section number(s) contain a man page for `open`?
+ 5. What three `#include` lines should be included to use the `open()` system
     call?
- 4. Which section number(s) contain a man page for `socket`?
- 5. Which `socket` option "Returns a value indicating whether or not this
-    socket has been marked to accept connections with listen(2)"?
- 6. How many man pages (in any section) contain keyword references to
+ 6. Which section number(s) contain a man page for `socket`?
+ 7. Which `socket` option "Returns a value indicating whether or not this
+    socket has been marked to accept connections with `listen(2)`"?
+ 8. How many man pages (in any section) contain keyword references to
     `getaddrinfo`?
- 8. According to the "DESCRIPTION" section of the man page for `string`, the
+ 9. According to the "DESCRIPTION" section of the man page for `string`, the
     functions described in that man page are used to perform operations on
     strings that are ________________. (fill in the blank)
- 8. What is the return value of `strcmp()` if the value of its first argument
-    (i.e., `s1`) is greater than the value of its second argument (i.e., `s2`)?
+ 10. What is the return value of `strcmp()` if the value of its first argument
+     (i.e., `s1`) is _greater than_ the value of its second argument (i.e.,
+     `s2`)?
