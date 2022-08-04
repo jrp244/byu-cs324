@@ -1,6 +1,7 @@
 CC = gcc
 CFLAGS = -g
 
+.PHONY: all
 all: signals killer
 
 killer: killer.c
@@ -9,14 +10,10 @@ killer: killer.c
 signals: signals.c
 	$(CC) $(CFLAGS) -o signals signals.c
 
+.PHONY: test
 test:
-	./signals ./killer 0
-	./signals ./killer 1
-	./signals ./killer 2
-	./signals ./killer 3
-	./signals ./killer 4
-	./signals ./killer 5
-	./signals ./killer 6
-	./signals ./killer 7
-	./signals ./killer 8
-	./signals ./killer 9
+	./driver.py
+
+.PHONY: clean
+clean:
+	rm -f signals killer
