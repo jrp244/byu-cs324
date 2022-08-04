@@ -45,7 +45,7 @@ class KillTest:
                         f'Maximum allowed: {self.max_time}s\n')
                 return False
 
-        # Check signals
+        # Apply rules
         output = p.stderr.decode('utf-8').strip()
         if not self.apply_rules(output.splitlines()):
             return False
@@ -63,7 +63,7 @@ class KillTest:
                 if not self.apply_nosig(m.group(1), strace_lines):
                     return False
                 continue
-            # Disallowed signals
+            # Signals with timing requirements
             m = RULE_SIGTIMING_RE.search(rule)
             if m is not None:
                 if not self.apply_sig_timing(m.group(1), strace_lines):
