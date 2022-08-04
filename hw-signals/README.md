@@ -209,6 +209,8 @@ Here is the desired output for each scenario.
 ```
 
 ### Scenario 3
+Restriction: any use of `SIGINT` or `SIGHUP` must happen before three seconds
+have passed!
 ```
 1
 2
