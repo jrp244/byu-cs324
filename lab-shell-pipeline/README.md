@@ -339,9 +339,10 @@ arguments passed have the following values:
    Because `execve()` takes as its second argument "an array of pointers to
    null-terminated strings that represent the argument list" (ref: `man exec`),
    the `NULL` after each command and its arguments creates a natural delimiter
-   for that command.  For example, `argv[cmds[0]]` can be passed as the
-   `filename` argument to `execve()` for the first command, `argv[cmds[1]]`
-   as the `filename` argument for the second, etc.
+   for that command.  For example, `argv[cmds[0]]` and `&argv[cmds[0]]` can be
+   passed as the `pathname` and `argv` arguments to `execve()`, respectively,
+   for the first command, and `argv[cmds[1]]` and `&argv[cmds[1]]` as the
+   `pathname` and `argv` arguments for the second, etc.
 
  - `stdin_redir` and `stdout_redir` have (like `cmds`) been populated with as
    many commands as have been identified in the pipeline (two in this case). In
@@ -461,21 +462,19 @@ Tests 1 - 3, 34 - 35, and 42 should all work at this point.
 Now would also be a good time to save your work, if you haven't already.
 
 
-### Multiple Commands
+### Two Pipelined Commands
 
-For every pair of consecutive commands in the pipeline (e.g., command 0 and
-command 1, command 1 and command 2, etc.), a pipe should be created, such that
-the write end of the pipe is duplicated on the standard output of the process
-running the first/earlier command, and the read end of the pipe is duplicated
-on the standard input of the process running the second/later command.  Thus,
-for a pipeline consisting of `n` commands, there should be `n` child processes
-connected by `n - 1` pipes.
+For a pipeline a consisting of two commands, a single pipe should be created,
+such that the write end of the pipe is duplicated on the standard output of the
+process running the first/earlier command, and the read end of the pipe is
+duplicated on the standard input of the process running the second/later
+command.
 
 Because child processes get a duplicate copy of file descriptors from their
-parent, you will want to create the pipe before the creating the pair of child
-processes.
+parent, you will want to create the pipe _before_ creating the pair of
+child processes.
 
-For each pair of commands, the process is:
+Thus, the process is:
 
  - Create a pipe.
  - Fork two child process.
@@ -515,26 +514,16 @@ For each pair of commands, the process is:
    - Close any open file descriptors that are exclusively for use by the
      child processes.
 
-Of course, you will need to make this work with an arbitrary number of command
-pairs.  A carefully designed loop can help with this.  For example, while your
-`pipe()` call must happen before both of your calls to `fork()`  (i.e., for a
-pair of commands / child processes), it could be that iteration `i` handles
-the `pipe()` call for a pair, but the corresponding `fork()` calls happen in
-iteration `i` and `i + 1`.  But as you iterate, remember that each call to
-`pipe()` yields two file descriptors.  Those descriptors are simply integers,
-but you will want to keep track of their values until they been served their
-purpose--e.g., for `dup2()`, `close()`, etc.
-
 The processes for all commands in a pipeline should be in the same progress
-group, and it is a different group than that of the parent (i.e., the shell).
-The group ID should be the process ID of the first command in the pipeline.
-Thus, for every command in a pipeline, after fork is called, the parent process
-should call `setpgid(pid, pgid)`, where `pid` is the process ID of the child
-process that was just created and `pgid` is the process ID of the first child
-process in the pipeline.  Now the collective child processes corresponding to
-the commands in a single pipeline are associated with a single process group
-ID.  This will allow all processes to be targetted at once with something like
-`kill()`.
+group, and that group is different than that of the parent (i.e., the shell).
+The group ID for commands in a pipeline should be the process ID of the first
+command in the pipeline.  Thus, for each command, after `fork()` is called, the
+parent process should call `setpgid(pid, pgid)`, where `pid` is the process ID
+of the child process that was just created and `pgid` is the process ID of the
+first child process in the pipeline.  Now the collective child processes
+corresponding to the commands in a single pipeline are associated with a single
+process group ID.  This will allow all processes to be targetted at once with
+something like `kill()`.
 
 Unlike the code for a single command above, in a pipeline, multiple commands
 will be running _concurrently_.  This means that the parent process cannot stop
@@ -566,8 +555,53 @@ The tools that you will use for this are:
 
 When you have gotten this far, again test your shell by 1) calling `make` to
 compile `tsh.c` and 2) running the example command-line exercises
+[shown previously](#reference-tiny-shell) against _your_ shell.  The examples
+with two pipelined commands should now work too!
+
+You can also test your work with [automated testing](#automated-testing).
+Tests 1 - 3, 34 - 37, and 40 - 42 should work at this point.
+
+Again, it is time to save your work!
+
+
+### A Pipeline with More Than Two Commands
+
+In the previous section, you implemented code to handle pipelines with two
+commands.  It is now time to generalize that code such that a pipe is created
+for every pair of consecutive commands in the pipeline (e.g., command 0 and
+command 1, command 1 and command 2, etc.).  Thus, for a pipeline consisting of
+`n` commands, there should be `n` child processes connected by `n - 1` pipes.
+
+For any given pair of consecutive commands, the process is the same as that in
+the previous section.  However, they now should be implemented within a
+carefully-designed `for` loop.  The trick is to do everything in the right
+order.  For example, because the `pipe()` call _must_ happen before both calls
+to `fork()`  (i.e., corresponding to each command in the pair), the `pipe()`
+call for that pair will probably happen in iteration `i`, while the
+corresponding `fork()` calls happen in iteration `i` and `i + 1`.
+
+As you iterate through the loop, remember that each call to `pipe()` yields two
+file descriptors.  Those descriptors are simply integers, but you will want to
+keep track of their values until they have served their purpose (e.g., for
+`dup2()`, `close()`, etc.), which might be in a future iteration.  Note that
+their memory location is not important, only their value.  For example, if `y`
+contains a file descriptor to be saved, the code `x = y;` works just fine,
+after which `x` can be used in place of `y` for "file" operations, and `y` can
+be overwritten.
+
+Just as with the two-command pipeline, a shell handling a pipeline with an
+arbitrary number of commands must: 1) wait for each child process after _all_
+child processes have been started; and 2) assign each child process to the
+process group associated with the first process in the pipeline.
+
+
+### Checkpoint 4
+
+When you have gotten this far, again test your shell by 1) calling `make` to
+compile `tsh.c` and 2) running the example command-line exercises
 [shown previously](#reference-tiny-shell) against _your_ shell.  All of them
-should work at this point, including those with pipelines.
+should work at this point, including those having pipelines consisting of more
+than two commands.
 
 You can also test your work with [automated testing](#automated-testing).
 Tests 1 - 3 and 34 - 42 should work at this point.
