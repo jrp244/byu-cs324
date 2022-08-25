@@ -611,7 +611,7 @@ This output is _optional_ but might be helpful and/or interesting to you.  You
 will also get extra credit.
 
 Note: you will find working code examples for this section and others in the
-[sockets homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-sockets).
+[sockets homework assignment](../hw-sockets).
 
 Every time the client sends a message using `write()` or `send()`, it should
 print the source address, source port, destination address, and destination
@@ -727,7 +727,7 @@ now know how to *format* a message appropriately.
 ## Initial Send and Receive
 
 Note: you will find working code examples for this section and others in the
-[sockets homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-sockets).
+[sockets homework assignment](../hw-sockets).
 
 With your first message created, set up a UDP client socket, with
 `getaddrinfo()`, `socket()`, and (optionally) `connect()`, specifying
@@ -858,7 +858,7 @@ corresponding level with both manual and [automated testing](#automated-testing)
 Use the information from the
 [Socket Setup and Manipulation](#socket-setup-and-manipulation) section,
 as well as code from the
-[sockets homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-sockets)
+[sockets homework assignment](../hw-sockets)
 to complete each level.
 
 Consider the completion of each level a checkpoint.

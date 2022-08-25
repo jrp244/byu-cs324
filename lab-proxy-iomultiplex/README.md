@@ -37,7 +37,7 @@ concepts by building a working HTTP proxy server that uses epoll.
 
 In this lab, you will be implementing an HTTP proxy server that handles
 concurrent requests.  However, unlike the proxy server implemented in the
-[HTTP Proxy with Threadpool Lab](https://github.com/cdeccio/byu-cs324-w2022/tree/master/lab-proxy-threadpool),
+[HTTP Proxy with Threadpool Lab](../lab-proxy-threadpool),
 the proxy server you produce will achieve concurrency using I/O multiplexing.
 Your server will not spawn any additional threads or processes (i.e., it will
 be single-threaded), and all sockets will be set to non-blocking.  While your
@@ -252,7 +252,7 @@ $ gcc -o echoservere echoservere.c
 
 You can use the code as a guide for building your HTTP proxy server with epoll.
 It runs the same way as the echo server implementations from the
-[concurrency homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-concurrency).
+[concurrency homework assignment](../hw-concurrency).
 
 
 # Instructions
@@ -260,7 +260,7 @@ It runs the same way as the echo server implementations from the
 ## Part 1 - HTTP Request Parsing
 
 Follow the instructions for implementing HTTP request parsing from
-[HTTP Proxy Lab - Threadpool Lab](https://github.com/cdeccio/byu-cs324-w2022/tree/master/lab-proxy-threadpool#part-1---http-request-parsing),
+[HTTP Proxy Lab - Threadpool Lab](../lab-proxy-threadpool#part-1---http-request-parsing),
 if you haven't already.
 
 
@@ -268,7 +268,7 @@ if you haven't already.
 
 As you implement this section, you might find it helpful to refer to the TCP
 code from the
-[sockets homework assignment](https://github.com/cdeccio/byu-cs324-w2022/tree/master/hw-sockets).
+[sockets homework assignment](../hw-sockets).
 
 
 ### Handling a New HTTP Client
@@ -427,7 +427,7 @@ was what you expected.
 ### Creating an HTTP Request
 
 Follow the instructions for creating an HTTP request from
-[HTTP Proxy Lab - Threadpool Lab](https://github.com/cdeccio/byu-cs324-w2022/tree/master/lab-proxy-threadpool#creating-an-http-request),
+[HTTP Proxy Lab - Threadpool Lab](../lab-proxy-threadpool#creating-an-http-request),
 if you haven't already.  Your proxy should create this request *after* it has
 received the entire HTTP request.
 
@@ -481,19 +481,19 @@ Some tools are provided for testing--both manual and automated:
 ## Manual Testing - Non-Local Server
 
 See
-[Manual Testing - Non-Local Server](https://github.com/cdeccio/byu-cs324-w2022/tree/master/lab-proxy-threadpool#manual-testing---non-local-server).
+[Manual Testing - Non-Local Server](../lab-proxy-threadpool#manual-testing---non-local-server).
 
 
 ## Manual Testing - Local Server
 
 See
-[Manual Testing - Local Server](https://github.com/cdeccio/byu-cs324-w2022/tree/master/lab-proxy-threadpool#manual-testing---local-server).
+[Manual Testing - Local Server](../lab-proxy-threadpool#manual-testing---local-server).
 
 
 ## Automated Testing
 
 See
-[Automated Testing](https://github.com/cdeccio/byu-cs324-w2022/tree/master/lab-proxy-threadpool#automated-testing),
+[Automated Testing](../lab-proxy-threadpool#automated-testing),
 but use "epoll" in place of "threadpool" whenever the driver is used.
 
 

@@ -4,7 +4,7 @@ This semester many class assignments are hosted on GitHub in the following
 repository:
 
 ```
-https://github.com/cdeccio/byu-cs324-w2022
+https://github.com/kentseamons/byu-cs324-f2022
 ```
 
 Individual assignments are in subfolders.  Within the folder for every assignment
@@ -98,7 +98,7 @@ Throughout these steps, we will refer to the official class repository as the
  2. Clone the upstream repository by running the following from the
     terminal:
     ```
-    git clone --bare https://github.com/cdeccio/byu-cs324-w2022 upstream-repo
+    git clone --bare https://github.com/kentseamons/byu-cs324-f2022 upstream-repo
     ```
 
  3. Push a mirror of the upstream repository to the new repository, which you
@@ -124,7 +124,7 @@ Throughout these steps, we will refer to the official class repository as the
  6. Add the upstream repository to your clone:
     ```
     cd byu-cs324-w2022
-    git remote add upstream ssh://git@github.com/cdeccio/byu-cs324-w2022
+    git remote add upstream ssh://git@github.com/kentseamons/byu-cs324-f2022
     git remote -v
     ```
 
