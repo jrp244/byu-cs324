@@ -502,12 +502,11 @@ Then re-run the client program:
 $ ./client -4 hostname port < alpha.txt
 ```
 
- 21. *What is the output of `sha1sum`?*
+ 21. *What is the output of the pipeline ending with `sha1sum`?*
 
-     Hint: it should match the output of the following:
-     ```bash
-     $ sha1sum < alpha.txt
-     ```
+     Hint: Because the bytes sent by the client should match the bytes in
+     `alpha.txt`, the output of `sha1sum` should be the same as running `sha1sum`
+     against `alpha.txt` itself.
 
 Modify `client.c`:
 
@@ -538,7 +537,8 @@ Now, execute your client program such that:
    of the client process (using input redirection on the shell); and
  - you are redirecting the output of your client process to `bestill.txt`.
 
-What your program is doing is the following:
+Use `cat` to show the contents of `http-bestill.txt`.  You should recognize the
+format as an HTTP request.  Your program is now doing the following:
  1. Reading content from the file `http-bestill.txt` (redirected to standard
     input), which happens to be an HTTP request;
  2. Sending the request to an HTTP server;
