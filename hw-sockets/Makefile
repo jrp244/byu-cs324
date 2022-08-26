@@ -1,10 +1,15 @@
 CC = gcc
-CFLAGS = -g
+CFLAGS = -Wall -O2 -g
 
+.PHONY: all
 all: client server
 
-fork: client.c
+client: client.c
 	$(CC) $(CFLAGS) -o client client.c
 
-exec: server.c
+server: server.c
 	$(CC) $(CFLAGS) -o server server.c
+
+.PHONY: clean
+clean:
+	rm -f client server
