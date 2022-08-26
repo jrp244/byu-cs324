@@ -320,7 +320,7 @@ Make the following modifications:
        returned by `accept()`.
      - You can re-use some of the arguments that are currently used with
        `recvfrom()`, further down.
-     - You will need to initialize `peer_addr_len` before it is used with
+     - You will need to initialize `remote_addr_len` before it is used with
        `accept()`, just as it is currently initialized before being called with
        `recvfrom()`.
    - Change the `recvfrom()` call to `recv()`  and the `sendto()` call to
