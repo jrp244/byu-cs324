@@ -253,18 +253,19 @@ the number of `recvfrom()` calls on the server.  Let's make some modifications
 to both client and server code to better understand what is going on:
 
  - Modify `server.c`:
-   - sleep for 2 seconds immediately after calling `recvfrom()` on the socket.
+   - sleep for five seconds immediately after calling `recvfrom()` on the
+     socket.
    - remove the `printf()` statements that you added earlier around the
      `recvfrom()` statement.
  - Modify `client.c` such that it does not attempt to read from the
-   socket--or print what it read--after writing to the socket.  Comment out
-   the code associated with the `read()` and `printf()` as described.
+   socket--or print what it read--after writing to the socket.  To do this,
+   comment out the code that calls `read()` and `printf()` as described.
 
 These changes make it so that the client is no longer waiting for the server to
 respond before sending its subsequent messages; it just sends them one after
-the other.  The two-second `sleep()` effectively _guarantees_ that the second
+the other.  The five-second `sleep()` effectively _guarantees_ that the second
 and third packets will _both_ have been received by the server's kernel, ready
-to be read, before `recvfrom()` is called by the server.
+to be read, before `recvfrom()` is called by the server the second time.
 
 Re-run `make` to rebuild both binaries.  Then interrupt and restart the server
 in the top-left "remote" pane.
@@ -273,13 +274,16 @@ With the server running on the remote host, execute (again) the client command
 you ran previously in the top-right "local" pane, sending the same strings as
 before.
 
- 7. *How many total calls to `send()` / `write()` were made by the client?*
-    Refer to `client.c`.
+ 7. *How many _total_ calls to `send()` / `write()` were made by the client?*
+    Hint: refer to `client.c`.
  8. *How many messages were received by the kernel of the server-side process
     _before_ the server called `recvfrom()` the second time (i.e., _between_
-    the server's first and seconds calls to `recvfrom()`)?
+    the server's first and second calls to `recvfrom()`)?*  You can assume that
+    the messages were sent immediately with `write()` and that the network
+    delay was negligible.
  9. *How many total calls to `recvfrom()` were required for the server process
-    to read all the messages/bytes that were sent?*
+    to read all the messages/bytes that were sent?*  Hint: look at the server
+    output, and refer to `server.c`.
  10. *Why didn't the server read all the messages that were ready with a single
      call to `recvfrom()`?*  Hint: see the man page for `udp`, specifically
      within the first three paragraphs of the "DESCRIPTION" section.
@@ -410,14 +414,20 @@ $ ./client -4 hostname port foo bar abc123
  16. *Looking inside `server.c`, how many sockets does the server use to
      communicate with multiple clients?*  For example, one for _each_ client,
      one for _all_ clients, etc.  *How does this compare to the answer to the
-     behavior for a server-side UDP socket (see #6)?*
+     behavior for a server-side UDP socket (see question 6)?*
 
-Make the following modifications, which mirror those made in part 2:
+Make the following modifications, which mirror those made in Part 1 (preceding
+questions 7 - 10):
 
-  - Modify `server.c` such that it sleeps for 2 seconds immediately after
-    calling `recv()` on the socket.
+  - Modify `server.c` such that it sleeps for five seconds immediately after
+    calling `accept()`.
   - Modify `client.c` such that it does not attempt to read from the
-    socket--or print what it read--after writing to the socket.
+    socket--or print what it read--after writing to the socket.  To do this,
+    comment out the code that calls `read()` and `printf()` as described.
+
+Similar to the changes made in Part 1, these changes make it so that the client
+will have sent all of its messages _and_ those messages will have been received
+by the server's kernel, before `recv()` is ever called by the server.
 
 Re-run `make` to rebuild both binaries.  Interrupt and restart the server in
 the top-left "remote" pane.
@@ -430,15 +440,17 @@ $ ./client -4 hostname port foo bar abc123
 ```
 
  17. *How many total calls to `send()` / `write()` were made by the client?*
-     Refer to `client.c`.
+     Hint: refer to `client.c`.
  18. *How many messages were received by the kernel of the server-side process
-     _before_ the server called `recv()` the second time (i.e., _between_ the
-     server's first and seconds calls to `recv()`)?*
+     _before_ the server called `recv()`?*  You can assume that the messages
+     were sent immediately with `write()` and that the network delay was
+     negligible.
  19. *How many total calls to `recv()` were required for the server process
-     to read all the messages/bytes that were sent?*
- 20. *How and why does the answer to #19 differ from that from #9?*
-     Hint: see the man page for `tcp`, specifically within the first paragraph
-     of the "DESCRIPTION" section.
+     to read all the messages/bytes that were sent?*  Hint: look at the server
+     output, and refer to `server.c`.
+ 20. *How and why does the answer to question 19 differ from that from question
+     9?* Hint: see the man page for `tcp`, specifically within the first
+     paragraph of the "DESCRIPTION" section.
 
 
 ## Part 3: Making Your Client Issue HTTP Requests
