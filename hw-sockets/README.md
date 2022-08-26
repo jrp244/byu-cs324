@@ -118,11 +118,30 @@ for comparing, copying, and performing I/O operations with strings and bytes:
 | `fgets()` | `read()` |
 | `strlen()` | no equivalent! |
 
-Remember, that the string operations should only be used when you _know_ that
-you are working with a array of bytes that has a null character.  That will
-_not_ typically be the case with sockets.  The primary way, therefore, to keep
-track of byte lengths with socket operations is with the return values of
-`recv()`/`recvfrom()`/`read()` or `send()`/`sendto()`/`write()`.
+Remember, that string operations should only be used when you _know_ that
+you are working with an array of bytes that has exactly one null character--at
+the end of the sequence.  That will _not_ typically be the case with sockets.
+The primary way, therefore, to keep track of byte lengths with socket
+operations is with the return values of `recv()`/`recvfrom()`/`read()` or
+`send()`/`sendto()`/`write()`.  You _must not_ use `strlen()` to determine how
+many bytes you have read or written!
+
+If you _know_ that the sequence of bytes that have been received from a socket
+should be treated like a string (i.e., they have no null characters), then you
+may then explicitly _add_ a terminating null character.  At this point, you
+may use string operations.  For example:
+
+```c
+nread = read(fd, buf, 512);
+buf[nread] = '\0';
+printf("%s\n", buf);
+```
+
+However, several of the exercises in this assignment, as well as future
+exercises in this class, will have you working with arbitrary binary data--not
+ASCII strings.  In these cases, and more generally, there is no guarantee that
+the bytes you read from the socket do not include a null character.  Thus, even
+if you add a null character at the end, you must not use string operations.
 
 
 # Part 1: UDP Sockets
@@ -222,12 +241,12 @@ null character for this particular program:
 ```
 
 `strlen()` is used on `argv[j]` only because we know it is a null-terminated
-string.  But `write()` is only concerned with bytes, so writing with argument
-`len` will result in writing one more character than the string is long--the
-null character.  See [Strings and Bytes](#strings-and-bytes) for more.  When
-the server echoes back our message, we can use string operations on it--but
-only because we know that it contains the null character that we included when
-we sent the message.
+string (i.e., because we wrote the program!).  But `write()` is only concerned
+with bytes, so writing with argument `len` will result in writing one more
+character than the string is long--the null character.  See
+[Strings and Bytes](#strings-and-bytes) for more.  When the server echoes back
+our message, we can use string operations on it--but only because we know that
+it contains the null character that we included when we sent the message.
 
 Now take note of how the number of calls to `send()` on the client relates to
 the number of `recvfrom()` calls on the server.  Let's make some modifications
