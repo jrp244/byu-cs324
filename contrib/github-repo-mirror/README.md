@@ -91,7 +91,7 @@ Throughout these steps, we will refer to the official class repository as the
     [official documentation](https://docs.github.com/en/get-started/quickstart/create-a-repo#create-a-repository),
     adhering to the following:
     - Create the repository under your user ("username"), and name the
-      repository `byu-cs324-w2022` (Step 2).
+      repository `byu-cs324` (Step 2).
     - Make sure the visibility of the repository is _Private_ (Step 4).
     - Do _not_ check the box "Initialize this repository with a README" (Step 5).
 
@@ -105,7 +105,7 @@ Throughout these steps, we will refer to the official class repository as the
     have just created:
     ```
     cd upstream-repo
-    git push --mirror ssh://git@github.com/username/byu-cs324-w2022
+    git push --mirror ssh://git@github.com/username/byu-cs324
     ```
     (substitute "username" with your GitHub username)
 
@@ -117,13 +117,13 @@ Throughout these steps, we will refer to the official class repository as the
 
  5. Clone your new repository, which is now a mirror of the upstream repository:
     ```
-    git clone ssh://git@github.com/username/byu-cs324-w2022
+    git clone ssh://git@github.com/username/byu-cs324
     ```
     (substitute "username" with your GitHub username)
 
  6. Add the upstream repository to your clone:
     ```
-    cd byu-cs324-w2022
+    cd byu-cs324
     git remote add upstream ssh://git@github.com/kentseamons/byu-cs324-f2022
     git remote -v
     ```
