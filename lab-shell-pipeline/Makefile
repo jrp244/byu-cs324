@@ -7,7 +7,7 @@ TSH = ./tsh
 TSHREF = ./tshref
 TSHARGS = "-p"
 CC = gcc
-CFLAGS = -Wall -O2
+CFLAGS = -Wall -O2 -g
 FILES = $(TSH) ./myintgroup ./myppid
 
 all: $(FILES)
