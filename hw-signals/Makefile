@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g
+CFLAGS = -Wall -O2 -g
 
 .PHONY: all
 all: signals killer
