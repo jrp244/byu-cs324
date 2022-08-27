@@ -118,11 +118,30 @@ for comparing, copying, and performing I/O operations with strings and bytes:
 | `fgets()` | `read()` |
 | `strlen()` | no equivalent! |
 
-Remember, that the string operations should only be used when you _know_ that
-you are working with a array of bytes that has a null character.  That will
-_not_ typically be the case with sockets.  The primary way, therefore, to keep
-track of byte lengths with socket operations is with the return values of
-`recv()`/`recvfrom()`/`read()` or `send()`/`sendto()`/`write()`.
+Remember, that string operations should only be used when you _know_ that
+you are working with an array of bytes that has exactly one null character--at
+the end of the sequence.  That will _not_ typically be the case with sockets.
+The primary way, therefore, to keep track of byte lengths with socket
+operations is with the return values of `recv()`/`recvfrom()`/`read()` or
+`send()`/`sendto()`/`write()`.  You _must not_ use `strlen()` to determine how
+many bytes you have read or written!
+
+If you _know_ that the sequence of bytes that have been received from a socket
+should be treated like a string (i.e., they have no null characters), then you
+may then explicitly _add_ a terminating null character.  At this point, you
+may use string operations.  For example:
+
+```c
+nread = read(fd, buf, 512);
+buf[nread] = '\0';
+printf("%s\n", buf);
+```
+
+However, several of the exercises in this assignment, as well as future
+exercises in this class, will have you working with arbitrary binary data--not
+ASCII strings.  In these cases, and more generally, there is no guarantee that
+the bytes you read from the socket do not include a null character.  Thus, even
+if you add a null character at the end, you must not use string operations.
 
 
 # Part 1: UDP Sockets
@@ -222,30 +241,31 @@ null character for this particular program:
 ```
 
 `strlen()` is used on `argv[j]` only because we know it is a null-terminated
-string.  But `write()` is only concerned with bytes, so writing with argument
-`len` will result in writing one more character than the string is long--the
-null character.  See [Strings and Bytes](#strings-and-bytes) for more.  When
-the server echoes back our message, we can use string operations on it--but
-only because we know that it contains the null character that we included when
-we sent the message.
+string (i.e., because we wrote the program!).  But `write()` is only concerned
+with bytes, so writing with argument `len` will result in writing one more
+character than the string is long--the null character.  See
+[Strings and Bytes](#strings-and-bytes) for more.  When the server echoes back
+our message, we can use string operations on it--but only because we know that
+it contains the null character that we included when we sent the message.
 
 Now take note of how the number of calls to `send()` on the client relates to
 the number of `recvfrom()` calls on the server.  Let's make some modifications
 to both client and server code to better understand what is going on:
 
  - Modify `server.c`:
-   - sleep for 2 seconds immediately after calling `recvfrom()` on the socket.
+   - sleep for five seconds immediately after calling `recvfrom()` on the
+     socket.
    - remove the `printf()` statements that you added earlier around the
      `recvfrom()` statement.
  - Modify `client.c` such that it does not attempt to read from the
-   socket--or print what it read--after writing to the socket.  Comment out
-   the code associated with the `read()` and `printf()` as described.
+   socket--or print what it read--after writing to the socket.  To do this,
+   comment out the code that calls `read()` and `printf()` as described.
 
 These changes make it so that the client is no longer waiting for the server to
 respond before sending its subsequent messages; it just sends them one after
-the other.  The two-second `sleep()` effectively _guarantees_ that the second
+the other.  The five-second `sleep()` effectively _guarantees_ that the second
 and third packets will _both_ have been received by the server's kernel, ready
-to be read, before `recvfrom()` is called by the server.
+to be read, before `recvfrom()` is called by the server the second time.
 
 Re-run `make` to rebuild both binaries.  Then interrupt and restart the server
 in the top-left "remote" pane.
@@ -254,13 +274,16 @@ With the server running on the remote host, execute (again) the client command
 you ran previously in the top-right "local" pane, sending the same strings as
 before.
 
- 7. *How many total calls to `send()` / `write()` were made by the client?*
-    Refer to `client.c`.
+ 7. *How many _total_ calls to `send()` / `write()` were made by the client?*
+    Hint: refer to `client.c`.
  8. *How many messages were received by the kernel of the server-side process
     _before_ the server called `recvfrom()` the second time (i.e., _between_
-    the server's first and seconds calls to `recvfrom()`)?
+    the server's first and second calls to `recvfrom()`)?*  You can assume that
+    the messages were sent immediately with `write()` and that the network
+    delay was negligible.
  9. *How many total calls to `recvfrom()` were required for the server process
-    to read all the messages/bytes that were sent?*
+    to read all the messages/bytes that were sent?*  Hint: look at the server
+    output, and refer to `server.c`.
  10. *Why didn't the server read all the messages that were ready with a single
      call to `recvfrom()`?*  Hint: see the man page for `udp`, specifically
      within the first three paragraphs of the "DESCRIPTION" section.
@@ -301,7 +324,7 @@ Make the following modifications:
        returned by `accept()`.
      - You can re-use some of the arguments that are currently used with
        `recvfrom()`, further down.
-     - You will need to initialize `peer_addr_len` before it is used with
+     - You will need to initialize `remote_addr_len` before it is used with
        `accept()`, just as it is currently initialized before being called with
        `recvfrom()`.
    - Change the `recvfrom()` call to `recv()`  and the `sendto()` call to
@@ -391,14 +414,20 @@ $ ./client -4 hostname port foo bar abc123
  16. *Looking inside `server.c`, how many sockets does the server use to
      communicate with multiple clients?*  For example, one for _each_ client,
      one for _all_ clients, etc.  *How does this compare to the answer to the
-     behavior for a server-side UDP socket (see #6)?*
+     behavior for a server-side UDP socket (see question 6)?*
 
-Make the following modifications, which mirror those made in part 2:
+Make the following modifications, which mirror those made in Part 1 (preceding
+questions 7 - 10):
 
-  - Modify `server.c` such that it sleeps for 2 seconds immediately after
-    calling `recv()` on the socket.
+  - Modify `server.c` such that it sleeps for five seconds immediately after
+    calling `accept()`.
   - Modify `client.c` such that it does not attempt to read from the
-    socket--or print what it read--after writing to the socket.
+    socket--or print what it read--after writing to the socket.  To do this,
+    comment out the code that calls `read()` and `printf()` as described.
+
+Similar to the changes made in Part 1, these changes make it so that the client
+will have sent all of its messages _and_ those messages will have been received
+by the server's kernel, before `recv()` is ever called by the server.
 
 Re-run `make` to rebuild both binaries.  Interrupt and restart the server in
 the top-left "remote" pane.
@@ -411,15 +440,17 @@ $ ./client -4 hostname port foo bar abc123
 ```
 
  17. *How many total calls to `send()` / `write()` were made by the client?*
-     Refer to `client.c`.
+     Hint: refer to `client.c`.
  18. *How many messages were received by the kernel of the server-side process
-     _before_ the server called `recv()` the second time (i.e., _between_ the
-     server's first and seconds calls to `recv()`)?*
+     _before_ the server called `recv()`?*  You can assume that the messages
+     were sent immediately with `write()` and that the network delay was
+     negligible.
  19. *How many total calls to `recv()` were required for the server process
-     to read all the messages/bytes that were sent?*
- 20. *How and why does the answer to #19 differ from that from #9?*
-     Hint: see the man page for `tcp`, specifically within the first paragraph
-     of the "DESCRIPTION" section.
+     to read all the messages/bytes that were sent?*  Hint: look at the server
+     output, and refer to `server.c`.
+ 20. *How and why does the answer to question 19 differ from that from question
+     9?* Hint: see the man page for `tcp`, specifically within the first
+     paragraph of the "DESCRIPTION" section.
 
 
 ## Part 3: Making Your Client Issue HTTP Requests
@@ -483,12 +514,11 @@ Then re-run the client program:
 $ ./client -4 hostname port < alpha.txt
 ```
 
- 21. *What is the output of `sha1sum`?*
+ 21. *What is the output of the pipeline ending with `sha1sum`?*
 
-     Hint: it should match the output of the following:
-     ```bash
-     $ sha1sum < alpha.txt
-     ```
+     Hint: Because the bytes sent by the client should match the bytes in
+     `alpha.txt`, the output of `sha1sum` should be the same as running `sha1sum`
+     against `alpha.txt` itself.
 
 Modify `client.c`:
 
@@ -519,7 +549,8 @@ Now, execute your client program such that:
    of the client process (using input redirection on the shell); and
  - you are redirecting the output of your client process to `bestill.txt`.
 
-What your program is doing is the following:
+Use `cat` to show the contents of `http-bestill.txt`.  You should recognize the
+format as an HTTP request.  Your program is now doing the following:
  1. Reading content from the file `http-bestill.txt` (redirected to standard
     input), which happens to be an HTTP request;
  2. Sending the request to an HTTP server;

@@ -9,16 +9,23 @@
 #define BUF_SIZE 500
 
 int main(int argc, char *argv[]) {
-	struct addrinfo hints;
-	struct addrinfo *result, *rp;
-	int sfd, s;
-	struct sockaddr_storage peer_addr;
-	socklen_t peer_addr_len;
+	int portindex;
+	unsigned short port;
+	int address_family;
+	int sock_type;
+	struct sockaddr_in ipv4addr;
+	struct sockaddr_in6 ipv6addr;
+
+	int sfd;
+	int s;
+	struct sockaddr_storage remote_addr;
+	struct sockaddr *local_addr;
+	socklen_t local_addr_len, remote_addr_len;
+
 	ssize_t nread;
 	char buf[BUF_SIZE];
-	int af;
-	int portindex;
 
+	/* Check usage */
 	if (!(argc == 2 || (argc == 3 &&
 			(strcmp(argv[1], "-4") == 0 || strcmp(argv[1], "-6") == 0)))) {
 		fprintf(stderr, "Usage: %s [ -4 | -6 ] port\n", argv[0]);
@@ -29,59 +36,50 @@ int main(int argc, char *argv[]) {
 	} else {
 		portindex = 2;
 	}
-	/* Use IPv4 by default (or if -4 is used).  If IPv6 is specified,
-	 * then use that instead. */
+
+	/* Use IPv4 by default (or if -4 is specified);
+	 * If -6 is specified, then use IPv6 instead. */
 	if (argc == 2 || strcmp(argv[portindex], "-4") == 0) {
-		af = AF_INET;
+		address_family = AF_INET;
 	} else {
-		af = AF_INET6;
+		address_family = AF_INET6;
+	}
+
+	port = atoi(argv[portindex]);
+	sock_type = SOCK_DGRAM;
+
+
+	/* SECTION A - populate address structures */
+
+	if (address_family == AF_INET) {
+		ipv4addr.sin_family = address_family;
+		ipv4addr.sin_addr.s_addr = INADDR_ANY; // listen on any/all IPv4 addresses
+		ipv4addr.sin_port = htons(port);       // specify port explicitly, in network byte order
+
+		// Assign local_addr and local_addr_len to ipv4addr
+		local_addr = (struct sockaddr *)&ipv4addr;
+		local_addr_len = sizeof(ipv4addr);
+	} else { // address_family == AF_INET6
+		ipv6addr.sin6_family = address_family;
+		ipv6addr.sin6_addr = in6addr_any;     // listen on any/all IPv6 addresses
+		ipv6addr.sin6_port = htons(port);     // specify port explicitly, in network byte order
+
+		// Assign local_addr and local_addr_len to ipv6addr
+		local_addr = (struct sockaddr *)&ipv6addr;
+		local_addr_len = sizeof(ipv6addr);
 	}
 
 
-	/* SECTION A - pre-socket setup; getaddrinfo() */
+	/* SECTION B - setup socket */
 
-	memset(&hints, 0, sizeof(struct addrinfo));
-
-	/* As a server, we want to exercise control over which protocol (IPv4
-	   or IPv6) is being used, so we specify AF_INET or AF_INET6 explicitly
-	   in hints, depending on what is passed on on the command line. */
-	hints.ai_family = af;	/* Choose IPv4 or IPv6 */
-	hints.ai_socktype = SOCK_DGRAM; /* Datagram socket */
-	hints.ai_flags = AI_PASSIVE;	/* For wildcard IP address */
-	hints.ai_protocol = 0;		  /* Any protocol */
-	hints.ai_canonname = NULL;
-	hints.ai_addr = NULL;
-	hints.ai_next = NULL;
-
-	s = getaddrinfo(NULL, argv[portindex], &hints, &result);
-	if (s != 0) {
-		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(s));
-		exit(EXIT_FAILURE);
-	}
-
-	/* getaddrinfo() returns a list of address structures.  However,
-	   because we have only specified a single address family (AF_INET or
-	   AF_INET6) and have only specified the wildcard IP address, there is
-	   no need to loop; we just grab the first item in the list. */
-	if ((s = getaddrinfo(NULL, argv[portindex], &hints, &result)) < 0) {
-		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(s));
-		exit(EXIT_FAILURE);
-	}
-
-
-	/* SECTION B - socket setup */
-
-	if ((sfd = socket(result->ai_family, result->ai_socktype, 0)) < 0) {
+	if ((sfd = socket(address_family, sock_type, 0)) < -1) {
 		perror("Error creating socket");
 		exit(EXIT_FAILURE);
 	}
-
-	if (bind(sfd, result->ai_addr, result->ai_addrlen) < 0) {
+	if (bind(sfd, local_addr, local_addr_len) < 0) {
 		perror("Could not bind");
 		exit(EXIT_FAILURE);
 	}
-
-	freeaddrinfo(result);   /* No longer needed */
 
 
 	/* SECTION C - interact with clients; receive and send messages */
@@ -89,16 +87,16 @@ int main(int argc, char *argv[]) {
 	/* Read datagrams and echo them back to sender */
 
 	for (;;) {
-		peer_addr_len = sizeof(struct sockaddr_storage);
+		remote_addr_len = sizeof(struct sockaddr_storage);
 		nread = recvfrom(sfd, buf, BUF_SIZE, 0,
-				(struct sockaddr *) &peer_addr, &peer_addr_len);
+				(struct sockaddr *) &remote_addr, &remote_addr_len);
 		if (nread == -1)
 			continue;   /* Ignore failed request */
 
 		char host[NI_MAXHOST], service[NI_MAXSERV];
 
-		s = getnameinfo((struct sockaddr *) &peer_addr,
-						peer_addr_len, host, NI_MAXHOST,
+		s = getnameinfo((struct sockaddr *) &remote_addr,
+						remote_addr_len, host, NI_MAXHOST,
 						service, NI_MAXSERV, NI_NUMERICSERV | NI_NUMERICHOST);
 	
 		if (s == 0)
@@ -108,8 +106,8 @@ int main(int argc, char *argv[]) {
 			fprintf(stderr, "getnameinfo: %s\n", gai_strerror(s));
 
 		if (sendto(sfd, buf, nread, 0,
-					(struct sockaddr *) &peer_addr,
-					peer_addr_len) != nread)
+					(struct sockaddr *) &remote_addr,
+					remote_addr_len) < 0)
 			fprintf(stderr, "Error sending response\n");
 	}
 }

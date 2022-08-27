@@ -19,8 +19,8 @@ int main(int argc, char *argv[]) {
 	int af;
 
 	if (argc < 3 ||
-		(strcmp(argv[1], "-4") == 0 || strcmp(argv[1], "-6") == 0) &&
-			argc < 4) {
+		((strcmp(argv[1], "-4") == 0 || strcmp(argv[1], "-6") == 0) &&
+			argc < 4)) {
 		fprintf(stderr, "Usage: %s [ -4 | -6 ] host port msg...\n", argv[0]);
 		exit(EXIT_FAILURE);
 	}
