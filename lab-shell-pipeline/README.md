@@ -17,6 +17,14 @@ runs the programs specified in those commands.
 - [Instructions](#instructions)
   - [`builtin_cmd()`](#builtin_cmd)
   - [`eval()`](#eval)
+    - [Checkpoint 1](#checkpoint-1)
+    - [Single Command](#single-command)
+    - [Checkpoint 2](#checkpoint-2)
+    - [Two Pipelined Commands](#two-pipelined-commands)
+    - [Checkpoint 3](#checkpoint-3)
+    - [A Pipeline with More Than Two Commands](#a-pipeline-with-more-than-two-commands)
+    - [Checkpoint 4](#checkpoint-4)
+- [Debugging Hints](#debugging-hints)
 - [Automated Testing](#automated-testing)
 - [Evaluation](#evaluation)
 - [Submission](#submission)
@@ -605,6 +613,29 @@ than two commands.
 
 You can also test your work with [automated testing](#automated-testing).
 Tests 1 - 3 and 34 - 42 should work at this point.
+
+
+# Debugging Hints
+
+ - Place helpful print statements in your code, for debugging.  Because
+   standard output will sometimes be redirected to file or to a pipe, use
+   `fprintf(stderr, ...)` to print to standard error, which is not touched in
+   this lab.  Also, remember to flush standard error using `fflush()`, or
+   output might get buffered and not show up when you expected it to.
+ - If you are using VScode,
+   [set up the debugger](../contrib/vscode-debugger/README.md), and use it to
+   walk through your code.
+ - Use the program `strace` to show you which file-related system calls are
+   being issued.  `strace` can be used with various command-line options to
+   cater it to your needs.  For example, the following command:
+   ```bash
+   $ strace -f -e trace=close,pipe,open,dup2 ./tsh
+   ```
+   calls `strace` on `./tsh`, showing only the system calls: `close()`,
+   `pipe()`, `open()`, and `dup2()`.  The `-f` option indicates that child
+   processes should be traced also, which is desirable since an important part
+   of the shell is creating and managing child processes.  See the man page for
+   `strace` for more usage information.
 
 
 # Automated Testing
