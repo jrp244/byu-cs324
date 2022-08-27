@@ -189,17 +189,16 @@ the same system-wide file description can write to the same open file.
        (see the man page for `fopen`).
        - Write "BEFORE FORK\n" to the file before the call to `fork()`.
        - Write "SECTION A\n" to the file in section A. Do the same for sections
-	 B, C, and D (but replacing the "A" with "B", "C", and "D",
-	 respectively). After each call to `fprintf()` that you use to print
-	 these statements, flush the file using `fflush()`;  otherwise, you
-	 might find that the strings are written in an unexpected order, due to
+         B, C, and D (but replacing the "A" with "B", "C", and "D",
+         respectively). After each call to `fprintf()` that you use to print
+         these statements, flush the file using `fflush()`;  otherwise, you
+         might find that the strings are written in an unexpected order, due to
          buffering.
 
      Re-`make` and run the newly recompiled `fork`. *Using `cat`, show the
      contents of the `fork-output.txt` file you created.*
 
- 17. Analyze the file contents, and *briefly describe what you observe about
-     the parent and child processes writing to the file.*
+ 17. Analyze the file contents. *Which process(es) write to the file?*
 
 
 # Part 6: Pipes
@@ -214,20 +213,26 @@ between different processes.
      - In section B:
        - Close the file descriptor corresponding to the _read_ end of the pipe
          (see the man pages for `pipe()` and `close()`).
-       - Create a file stream using the file descriptor corresponding to the
-         _write_ end of the pipe (see the man page for `fdopen()`).  Make sure
-         it is opened for _writing_.
-       - Write "hello from Section B\n" to the newly opened stream (see the man
-         page for `fputs()`).
+       - Write "hello from Section B\n" to the file descriptor corresponding to
+         the _write_ end of the pipe (see the man page for `write(2)`).  Note
+         that unlike `fputs()`, which takes a null-terminated string (`char *`)
+         as input and writes to a buffered file stream (`FILE *`), `write()`
+         simply takes a file descriptor, a pointer to a memory location and a
+         number of bytes.  Thus, you will need to specify the length of the
+         string.  If the length is incorrect, the command will yield unexpected
+         results.
      - In section C:
        - Close the file descriptor corresponding to the _write_ end of the
          pipe (see the man pages for `pipe()` and `close()`).
-       - Create a file stream using the file descriptor corresponding to the
-         _read_ end of the pipe (see the man page for `fdopen()`).  Make sure
-         it is opened for _reading_.
-       - Read a single line from the newly opened file stream (see the man page
-         for `fgets()`).
-       - Print the line retrieved from `fgets()` to stdout.
+       - Read from file descriptor corresponding to the _read_ end of the pipe
+         (see the man page for `read(2)`) into a buffer that you have declared.
+         Save the number of bytes read (return value of `read()`), and use that
+         value to add a null character after them, so string operations can be
+         performed on it (see the man page for string()).
+       - Print the string retrieved from `read()` to stdout.  Note that
+         `printf()` and `fprintf()` require a null-terminated string, i.e., to
+         know where the string ends.  If you have not properly added the null
+         character, the command will yield unexpected results.
 
      Re-`make` and run the newly recompiled `fork`.  *Show the output of your
      program.*
@@ -270,6 +275,13 @@ using `dup2()`.
        pages for `fileno()` and `dup2()`).  Pay special attention to the
        ordering of the arguments passed to `dup2()`, or this will not work
        properly.
+
+       Note that if you did not use `fflush()` after writing to the file stream
+       associated with `fork-output.txt`, as recommended in question 16, you
+       might find that the buffer associated with the open file stream is
+       destroyed--as part of the re-initialization of the stack and heap, in
+       connection with `execve()`, before it is ever flushed.  In this case,
+       the statements you wrote will never make it to the file!
 
      Re-make and execute the following to show that it works:
 
