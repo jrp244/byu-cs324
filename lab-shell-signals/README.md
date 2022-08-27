@@ -24,6 +24,7 @@ programs specified in those commands.
   - [Checkpoint 3](#checkpoint-3-1)
   - [`do_bgfg()`](#do_bgfg)
   - [Final Checkpoint](#final-checkpoint)
+- [Debugging Helps](#debugging-helps)
 - [Automated Testing](#automated-testing)
 - [Evaluation](#evaluation)
 - [Submission](#submission)
@@ -660,9 +661,10 @@ command line corresponds to a built-in command.  Otherwise, do the following:
  - In the child process:
    - Unblock signals by restoring the mask.
    - Run the executable in the context of the child process using `execve()`.
-   - If the command is invalid, then print an error.  The error that you print
-     should match the format of that printed by the reference shell in the same
-     cirumstances.  See the [example](#non-existent-commands) above.
+   - If the command is invalid, then print an error and exit.  The error that
+     you print should match the format of that printed by the reference shell
+     in the same cirumstances.  See the [example](#non-existent-commands)
+     above.
  - In the parent process:
    - Put the child process in its own process group, for which the group ID is
      the same as the process ID of the child process.  You can use
@@ -890,6 +892,28 @@ sequences from all previous checkpoints should still work as well.
 
 You can also test your work with [automated testing](#automated-testing).
 Tests 1 - 16 should work at this point.
+
+
+# Debugging Hints
+
+ - Place helpful print statements in your code, for debugging.  Even though
+   your standard output is not redirected in this lab, printing to standard
+   error (instead of standard output) is a good practice.  In this case, use
+   `fprintf(stderr, ...)`.   Remember to flush standard error using `fflush()`,
+   or output might get buffered and not show up when you expected it to.
+ - If you are using VScode,
+   [set up the debugger](../contrib/vscode-debugger/README.md), and use it to
+   walk through your code.
+ - Use the program `strace` to show you which signals are being sent.  `strace`
+   can be used with various command-line options to cater it to your needs.
+   For example, the following command:
+   ```bash
+   $ strace -f -e trace=%signal ./tsh
+   ```
+   calls `strace` on `./tsh`, showing only calls related to signals. The `-f`
+   option indicates that child processes should be traced also, which is
+   desirable since an important part of the shell is creating and managing
+   child processes.  See the man page for `strace` for more usage information.
 
 
 # Automated Testing
