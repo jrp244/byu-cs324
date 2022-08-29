@@ -40,10 +40,11 @@ program:
 gcc -o catmatch catmatch.c
 ```
 
-Your code should compile with no warnings!
+The `-Wall` option specifies that the compiler should complain about all
+warnings.  The `-o` option names the resulting binary being named `catmatch`
+(as opposed to the default, `a.out`).
 
-The `-o` option names the resulting binary being named `catmatch` (as opposed
-to the default, `a.out`).
+Your code should compile with no warnings!
 
 
 # Testing
