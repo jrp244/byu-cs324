@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 		/* END SECTION B */
 	} else {
 		/* BEGIN SECTION C */
-
+		wait(NULL);
 		printf("Section C\n");
 		sleep(30);
 		sleep(30);

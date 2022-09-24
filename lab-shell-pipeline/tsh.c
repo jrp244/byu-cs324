@@ -1,7 +1,7 @@
 /* 
  * tsh - A tiny shell program with job control
  * 
- * <Put your name and login ID here>
+ * Jaren jrp243
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,7 +16,7 @@
 /* Misc manifest constants */
 #define MAXLINE    1024   /* max line size */
 #define MAXARGS     128   /* max args on a command line */
-
+#define MAXCMDS     16 //Might be right. Idk
 /* Global variables */
 extern char **environ;      /* defined in libc */
 char prompt[] = "tsh> ";    /* command line prompt (DO NOT CHANGE) */
@@ -28,7 +28,6 @@ char sbuf[MAXLINE];         /* for composing sprintf messages */
 /* Here are the functions that you will implement */
 void eval(char *cmdline);
 int builtin_cmd(char **argv);
-
 /* Here are helper routines that we've provided for you */
 int parseline(const char *cmdline, char **argv); 
 int parseargs(char **argv, int *cmds, int *stdin_redir, int *stdout_redir);
@@ -91,7 +90,10 @@ int main(int argc, char **argv)
 
     exit(0); /* control never reaches here */
 }
-  
+
+
+
+
 /* 
  * eval - Evaluate the command line that the user has just typed in
  * 
@@ -104,14 +106,108 @@ int main(int argc, char **argv)
  * background children don't receive SIGINT (SIGTSTP) from the kernel
  * when we type ctrl-c (ctrl-z) at the keyboard.  
 */
-void eval(char *cmdline) 
+void eval(char *cmdline)
 {
+//For the next lab: Create jobs and some states
+//Create an option to terminate the shell
+	char *argv[MAXARGS];
+	int cmds[MAXARGS];
+	int stdin_redir[MAXARGS];
+	int stdout_redir[MAXARGS];
+	parseline(cmdline, argv);
+	int numOfCmds = parseargs(argv, cmds, stdin_redir, stdout_redir);
+	builtin_cmd(argv);
+
+	if (numOfCmds == 1) {
+		int pid = fork();
+
+		if (pid == 0) {
+			if (stdin_redir[0] != -1) { //Pipe
+				FILE* firstInputFile = fopen(argv[stdin_redir[0]], "r");
+				int firstReadDescriptor = fileno(firstInputFile);
+				dup2(firstReadDescriptor, STDIN_FILENO);
+				close(firstReadDescriptor);
+			}
+			if (stdout_redir[0] != -1) {
+				FILE* firstOutputFile = fopen(argv[stdout_redir[0]], "w");
+				int firstWriteDescriptor = fileno(firstOutputFile);
+				dup2(firstWriteDescriptor, STDOUT_FILENO);
+				close(firstWriteDescriptor);
+			}
+			char *newEnv[] = { NULL };
+			execve(argv[cmds[0]], &argv[cmds[0]], newEnv);
+			exit(0);
+
+		} else {
+			setpgid(pid, pid);
+			waitpid(pid, NULL, 0);
+
+		}
+	} else {
+		int pgid = 0;
+		int pids[numOfCmds];
+		int fds[2];
+		int save0 = -1;
+		int save1 = -1;
+		for (int i = 0; i < numOfCmds; ++i) {
+			if (i != 0) {
+				save0 = fds[0]; save1 = fds[1];
+			 }
+			if (i != (numOfCmds- 1)) {
+				if (pipe(fds) == -1) { printf("Error with pipe\n"); return; }
+			}
+			int pid = fork();
+			if (pid != 0) {
+				if (i == 0) { pgid = pid; }
+				if (i != 0) { close(save0); close(save1); }
+				setpgid(pid, pgid);
+				pids[i] = pid;
+			}
+
+			else {
+				if (stdin_redir[i] != -1) {
+					FILE* SecondInputFile = fopen(argv[stdin_redir[i]], "r");
+					int SecondReadDescriptor = fileno(SecondInputFile);
+					dup2(SecondReadDescriptor, STDIN_FILENO);
+					close(SecondReadDescriptor);
+				}
+				if (stdout_redir[i] != -1) {
+					FILE* SecondOutputFile = fopen(argv[stdout_redir[i]], "w");
+					int SecondWriteDescriptor = fileno(SecondOutputFile);
+					dup2(SecondWriteDescriptor, STDOUT_FILENO);
+					close(SecondWriteDescriptor);
+				}
+				if (i == 0) {
+				       	dup2(fds[1], STDOUT_FILENO);
+				}
+
+				else if (i != 0 && i != (numOfCmds- 1)) {
+					dup2(save0, STDIN_FILENO);
+					dup2(fds[1], STDOUT_FILENO);
+				}
+
+				else if (i == (numOfCmds- 1)) {
+					dup2(save0, STDIN_FILENO);
+				}
+
+				close(fds[0]);
+				close(fds[1]);
+				if (save0 != -1) { close(save0); close(save1); }
+				// Execute the command
+				char *newEnv[] = { NULL };
+				execve(argv[cmds[i]], &argv[cmds[i]], newEnv);
+			}
+		}
+		for (int i = 0; i < numOfCmds; ++i) {
+			waitpid(pids[i], NULL, 0);
+		}
+	}
     return;
 }
 
-/* 
+/*
  * parseargs - Parse the arguments to identify pipelined commands
- * 
+ *
  * Walk through each of the arguments to find each pipelined command.  If the
  * argument was | (pipe), then the next argument starts the new command on the
  * pipeline.  If the argument was < or >, then the next argument is the file
@@ -233,7 +329,13 @@ int parseline(const char *cmdline, char **argv)
  */
 int builtin_cmd(char **argv) 
 {
-    return 0;     /* not a builtin command */
+	if (strcmp(argv[0], "quit") == 0) {
+		exit(0);
+	}
+	else {
+		return 0;
+	}
+/* not a builtin command */
 }
 
 /***********************
