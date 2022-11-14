@@ -1,0 +1,18 @@
+"version": "0.2.0",
+"configurations": [
+    {
+        "name": "catmatch",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/catmatch",
+        "args" : [
+            "lorem-ipsum.txt"
+        ],
+        "enviroment": [{"name": "CATMATCH_PATTERN","value": "culpa"}],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}",
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "miDebuggerPath": "/usr/bin/gdb"
+    }
+]

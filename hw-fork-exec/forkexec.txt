@@ -1,0 +1,38 @@
+1. The program will print the pid and then sleep 30 seconds. It then runs the program given via command line argument, or exits if no program is given.
+
+2. The final printf() statment is only exucuted when a commandline argument is given, but it cannot be executed.
+
+3. jrp243@california:~/CS324/byu-cs324/hw-fork-exec$ ./a.out /bin/cat
+Program "./a.out" has pid 3985413. Sleeping.
+Running exec of "/bin/cat"
+
+4. jrp243@yosemite:~/CS324/byu-cs324/hw-fork-exec$ ps -q 2009893 -eo user,pid,ppid,state,ucmd
+USER         PID    PPID S CMD
+ exec
+jrp243@yosemite:~/CS324/byu-cs324/hw-fork-exec$ ps -q 2009893 -eo user,pid,ppid,state,ucmd
+USER         PID    PPID S CMD
+jrp243@yosemite:~/CS324/byu-cs324/hw-fork-exec$ c
+
+5. Everything is the same both times the ps is run except for the command
+,which changes from exec to cat.
+
+6. ./a.out /does-not-exist
+Same stuff as before.
+
+Exec couldn't run the stuff it was given to it, but it continued as if it has successfully finished execution. 
+
+7. The program prints its own process ID, then forks itself, and if it can't do that it automatically exits. If it does work each program enters section A and prints its pid again. 
+After a sleep period of 30 seconds the child enters section B then sleeps from 30 more seconds, and then quits. The parent process enters section C and sleeps for 1 minute.
+ Neither the parent or the child process reaches section D I guess. 
+
+8. Section A is ran by both the parent and child, section B is ran only by child, section C is ran by parent, and Dection D isn't run at all. 
+
+9.
+
+10.
+
+11.
+
+12.
+
+13.

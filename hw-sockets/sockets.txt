@@ -1,0 +1,126 @@
+1. socket, connect
+2. We would need to define a destination address in our sendto/sendmsg calls
+3. from argv
+4. The port values are the same for all 3
+5. Port values are within the range of 30000-60000
+6. One socket per port number
+7. 3
+8. 1
+9. 3
+10. UDP continues on even if it doesn't recieve everything. It doesn't error check
+11.How does the role of the original socket (i.e., sfd, returned from the call to socket()), after listen() is called on it, compare with the role of the socket returned from the call to accept()? See the man pages for listen() and accept().
+The original socket just waits and is available only to open new sockets and the socket we created is actually receiving the information
+
+12.With the new changes you have implemented, how have the semantics associated with the call to connect() changed? That is, what will happen now when you call connect() that is different from when you called connect() with a UDP socket? See the man pages for connect(), tcp, and udp.
+Now when we call connect, a new, client specific socket is created that accepts a byte stream instead of a datagram. Now all info we send will go onto the same byte stream instead of in individual packets
+
+13.Why does the ss output show an established connection ("ESTAB") between client and server before any messages are sent from client to server? Hint: see the man page for tcp, specifically within the first two paragraphs of the "DESCRIPTION" section.
+The connection is established in our connect call and our socket is waiting to initialize a socket from that specific address
+
+14.The server prints out the remote (i.e., client-side) address and port associated with the incoming message. What do you notice about the port value used by the client for different messages sent using the same socket (i.e., from running ./client a single time)?
+They are the same
+
+15.What do you notice about the port value used by the client for different messages sent using different sockets (i.e., from running ./client multiple times)?
+The port values are different but really close together (increment by 2)
+
+16.Looking inside server.c, how many sockets does the server use to communicate with multiple clients? For example, one for each client, one for all clients, etc. How does this compare to the answer to the behavior for a server-side UDP socket (see #6)?
+One for all clients. This differs from UDP which was one per client
+
+17.How many total calls to send() / write() were made by the client? Refer to client.c.
+3
+
+18.How many messages were received by the kernel of the server-side process before the server called recv() the second time (i.e., between the server's first and seconds calls to recv())
+2 (second and third messages)
+
+19.How many total calls to recv() were required for the server process to read all the messages/bytes that were sent?
+2
+
+20.How and why does the answer to #19 differ from that from #9? Hint: see the man page for tcp, specifically within the first paragraph of the "DESCRIPTION" section.
+Since tcp connections have information sent through byte streams instead of packets, the server can read information from the second and third connections at once since they are both     just appended onto the same byte stream
+
+21.What is the output of sha1sum?
+da39a3ee5e6b4b0d3255bfef95601890afd80709
+ 
+22.Show the command pipeline that you used to run your client program and issue the request.
+./client -4 www-notls.imaal.byu.edu 80 < http-bestill.txt > bestill.txt
+
+23.Show the output to the following:
+Sent 80 bytes to server
+
+Received 1009 bytes: HTTP/1.1 200 OK
+
+Date: Thu, 24 Feb 2022 23:34:17 GMT
+
+Server: Apache/2.4.51 (Debian)
+
+Upgrade: h2c
+
+Connection: Upgrade, close
+
+Content-length: 809
+
+Vary: Accept-Encoding
+
+Content-Type: text/plain
+
+
+
+
+
+1. Be still, my soul: The Lord is on thy side;
+
+With patience bear thy cross of grief or pain.
+
+Leave to thy God to order and provide;
+
+In ev'ry change he faithful will remain.
+
+Be still, my soul: Thy best, thy heav'nly Friend
+
+Thru thorny ways leads to a joyful end.
+
+
+
+2. Be still, my soul: Thy God doth undertake
+
+To guide the future as he has the past.
+
+Thy hope, thy confidence let nothing shake;
+
+All now mysterious shall be bright at last.
+
+Be still, my soul: The waves and winds still know
+
+His voice who ruled them while he dwelt below.
+
+
+
+3. Be still, my soul: The hour is hast'ning on
+
+When we shall be forever with the Lord,
+
+When disappointment, grief, and fear are gone,
+
+Sorrow forgot, love's purest joys restored.
+
+Be still, my soul: When change and tears are past,
+
+All safe and blessed we shall meet at last.
+
+
+v
+
+24.Show the command pipeline that you used to run your client program and issue the request.
+./client -4 www-notls.imaal.byu.edu 80 < http-socket.txt > ./strip_http.py > socket.jpg
+
+25. Show the output to the following:
+92a0365a49e9bd15b2d10d38285ce04c352de3f2  socket.jpg
+
+26.What happens when you call read() (or recv()) on an open socket (UDP or TCP), and there are no messages are available at the socket for reading? Hint: see the man page for recv(), especially the "DESCRIPTION" section.
+If no messages are available at the socket, the receive calls wait for a message to arrive, unless the socket is nonblocking (see fcntl(2)), in which case the value -1 is  returned  and the  external  variable  errno is set to EAGAIN or EWOULDBLOCK.
+
+27.What happens when you call read() (or recv()) on an open socket (UDP or TCP), and the amount of data available is less than the requested amount? Hint: see the man page for recv(), especially the "DESCRIPTION" section.
+It just returns all the available data
+
+28.What happens you you call read() (or recv()) on an open UDP socket, and you specify a length that is less than the length of the next datagram? Hint: see the man page for udp, specifically within the first three paragraphs of the "DESCRIPTION" section.
+If a message is too long to fit in the supplied buffer, excess bytes may be discarded depending on the type  of socket the message is received from.
