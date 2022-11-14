@@ -28,26 +28,100 @@ int main(int argc, char *argv[]) {
 
 	switch (scenario[0]) {
 	case '0':
+		kill(pid, SIGHUP);
 		break;
 	case '1':
+		kill(pid,12);
+		sleep(1);
+		kill(pid,SIGTERM);
+		sleep(1);
 		break;
 	case '2':
+		kill(pid, SIGHUP);
+		sleep(5);
+		kill(pid, 12);
+		sleep(1);
+		kill(pid, SIGTERM);
+		sleep(1);
 		break;
 	case '3':
-		break;
+		kill(pid, SIGHUP);
+                sleep(1);
+		kill(pid, SIGHUP);
+                sleep(5);
+                kill(pid, 12);
+                sleep(1);
+                kill(pid, SIGTERM);
+                sleep(1);
+                break;
 	case '4':
-		break;
+		kill(pid, SIGHUP);
+                sleep(1);
+                kill(pid, SIGINT);
+		sleep(10);
+                kill(pid, 12);
+                sleep(1);
+                kill(pid, SIGTERM);
+                sleep(1);
+                break;
 	case '5':
-		break;
+		kill(pid, SIGHUP);
+                kill(pid, 12);
+		sleep(1);
+                kill(pid, SIGTERM);
+                sleep(1);
+                break;
 	case '6':
-		break;
+		kill(pid, SIGHUP);
+                sleep(5);
+                kill(pid, 10);
+                sleep(1);
+		kill(pid, 16);
+		sleep(1);
+                kill(pid, 12);
+                sleep(1);
+                kill(pid, SIGTERM);
+                sleep(1);
+                break;
 	case '7':
-		break;
+		kill(pid, SIGHUP);
+                sleep(5);
+                kill(pid, 10);
+                sleep(1);
+                kill(pid, 12);
+                sleep(1);
+                kill(pid, SIGTERM);
+                sleep(1);
+                break;
 	case '8':
-		break;
+		kill(pid, SIGHUP);
+                sleep(5);
+		kill(pid, 31);
+		sleep(1);
+                kill(pid, 10);
+		sleep(1);
+		kill(pid, 30);
+                sleep(1);
+                kill(pid, SIGTERM);
+                sleep(1);
+                kill(pid, 12);
+                sleep(1);
+                kill(pid, SIGTERM);
+                sleep(1);
+                break;
 	case '9': 
+		kill(pid, 31);
+                sleep(1);
+		kill(pid, SIGQUIT);
+		sleep(1);
+		kill(pid, 31);
+                sleep(1);
+		kill(pid, 12);
+                sleep(1);
+                kill(pid, SIGTERM);
+                sleep(1);
 		break;
-
+		
 	}
 	waitpid(pid, NULL, 0);
 }

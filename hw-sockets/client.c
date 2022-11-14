@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
 
 	/* Send remaining command-line arguments as separate
 	   datagrams, and read responses from server */
-
+	sleep(30);
 	for (j = hostindex + 2; j < argc; j++) {
 		len = strlen(argv[j]) + 1;
 		/* +1 for terminating null byte */
